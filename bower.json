@@ -1,0 +1,21 @@
+{
+  "name": "qrcodejs",
+  "version": "1.0.0",
+  "homepage": "https://github.com/mpierre/qrcodejs",
+  "authors": [
+    "Mattias Pierre <mattias.pierre@flixster-inc.com>"
+  ],
+  "description": "Library for making QRCode",
+  "main": "qrcode.js",
+  "keywords": [
+    "qrcode"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
