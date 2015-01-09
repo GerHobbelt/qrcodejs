@@ -9,8 +9,58 @@
  * @see <a href="http://jeromeetienne.github.com/jquery-qrcode/" target="_blank">http://jeromeetienne.github.com/jquery-qrcode/</a>
  */
 var QRCode;
+// checking if we are not at client side
+if(typeof document === 'undefined' && typeof navigator === 'undefined'){
+	var Canvas = require('canvas');
+	var Image = Canvas.Image;
+	var fs = require('fs');
+	/**
+	 * createFakeElementById
+	 * 
+	 * return an object fake the dom element
+	 * 
+	 * @id {String}
+	 * @return {Object}
+	 */
+	var createFakeElementById = function(id){
+		this.id = id;
+		this.childNodes = [];
+		this.style = {};
+	}
 
-(function () {
+	createFakeElementById.prototype.appendChild = function(el){
+		this.childNodes.push(el);
+	}
+
+	var document = {
+			documentElement:{
+				tagName:"div"
+			},
+			getElementById: function(id){
+				return new createFakeElementById(id);
+			},
+			createElement: function(tagName){
+				var ele;
+				// only care about 'canvas' or 'img'
+				switch(tagName){
+					case 'canvas':
+						ele = new Canvas();
+						ele.style = {};
+						break;
+					case 'img':
+						ele = new Image();
+						ele.style = {};
+						break;
+				}
+				return ele;
+			}
+		};
+	var CanvasRenderingContext2D = true;
+	var navigator = {};
+}
+
+
+(function (document) {
 	//---------------------------------------------------------------------
 	// QRCode for JavaScript
 	//
@@ -276,7 +326,7 @@ var QRCode;
 		function _onMakeImage() {
 			this._elImage.src = this._elCanvas.toDataURL("image/png");
 			this._elImage.style.display = "block";
-			this._elCanvas.style.display = "none";			
+			this._elCanvas.style.display = "none";	
 		}
 		
 		// Android 2.1 bug workaround
@@ -611,4 +661,14 @@ var QRCode;
 	 * @name QRCode.CorrectLevel
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
-})();
+
+	// add write method to store qrcode on disk.
+	if(typeof fs !== 'undefined'){
+		QRCode.prototype.write = function(path){
+			fs.writeFile(path, this._oDrawing._elCanvas.toBuffer());
+		}
+	}
+	
+})(document, navigator);
+
+module.exports = QRCode;
