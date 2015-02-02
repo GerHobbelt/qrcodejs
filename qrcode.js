@@ -601,7 +601,8 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 		// Overwrites options
 		if (vOption) {
 			for (var i in vOption) {
-				this._htOption[i] = vOption[i];
+				if(Object.prototype.hasOwnProperty.call(vOption, vOption[i]))
+					this._htOption[i] = vOption[i];
 			}
 		}
 		
