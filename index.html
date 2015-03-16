@@ -53,22 +53,33 @@
       Light:
       <input id="light" type="text" value="#ffffff" style="width: 150px;" maxlength="7">
     </div>
+    <div class="text">
+      Correction:
+      <select id="correction">
+        <option value="L">L (7%)</option>
+        <option value="M">M (15%)</option>
+        <option value="Q">Q (25%)</option>
+        <option value="H" selected>H (30%)</option>
+      </select>
+    </div>
     <div id="qrcode"></div>
   </div>
 
   <script type="text/javascript">
-    $('#size, #margin, #dark, #light').on('keyup change', function (e) {
+    $('#size, #margin, #dark, #light, #correction').on('keyup change', function (e) {
       var size = $('#size').val();
       var margin = $('#margin').val();
       var dark = $('#dark').val();
       var light = $('#light').val();
+      var correction = $('#correction').val();
       $('#qrcode').empty();
       var qrcode = new QRCode($('#qrcode')[0], {
         width:  parseInt(size) || 300,
         height: parseInt(size) || 300,
         margin: parseInt(margin) || 0,
         colorDark: dark || '#000',
-        colorLight: light || '#fff'
+        colorLight: light || '#fff',
+        correctLevel: QRCode.CorrectLevel[correction]
       });
       $("#text").off('keyup').on('keyup', function (e) {
         qrcode.makeCode($('#text').val());
