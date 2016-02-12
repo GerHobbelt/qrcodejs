@@ -612,3 +612,11 @@ var QRCode;
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
 })();
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+exports.default = QRCode;
+
+module.exports = exports['default'];
