@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/angelathewebdev/qrcodejs.git"
   },
-  "author": "Angela Wang",
+  "author": [
+    "Sangmin Shim <ssm0123@gmail.com>",
+    "Angela Wang <idu.angela@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/angelathewebdev/qrcodejs/issues"
