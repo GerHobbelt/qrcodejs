@@ -442,7 +442,6 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 		 * @param {Object} htOption QRCode Options 
 		 */
 		var Drawing = function (el, htOption) {
-    		this._bIsPainted = false;
     		this._android = _getAndroid();
 		
 			this._htOption = htOption;
@@ -452,7 +451,6 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 			el.appendChild(this._elCanvas);
 			this._el = el;
 			this._oContext = this._elCanvas.getContext("2d");
-			this._bIsPainted = false;
 			this._elImage = document.createElement("img");
 			this._elImage.className = "qrcode-img";
 			this._elImage.alt = "Scan me!";
@@ -466,10 +464,9 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 		 * 
 		 * @param {QRCode} oQRCode 
 		 */
-		Drawing.prototype.draw = function (oQRCode) {
+    Drawing.prototype.draw = function (oQRCode, _htOption) {
             var _elImage = this._elImage;
             var _oContext = this._oContext;
-            var _htOption = this._htOption;
             var width = _htOption.width;
             var height = _htOption.height;
             var margin = _htOption.margin;
@@ -492,7 +489,6 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
       }
 
 			_elImage.style.display = "none";
-			this.clear();
 			_oContext.fillStyle = _htOption.colorLight;
 			_oContext.fillRect(0, 0, width, height);
 			
@@ -518,7 +514,7 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
             nTop += ((1 - _htOption.blockRatio) / 2) * nHeight;
             nLeft += ((1 - _htOption.blockRatio) / 2) * nWidth;
           }
-					_oContext.fillRect(nLeft + nBorderWidth, nTop + nBorderHeight, nDrawnWidth, nDrawnHeight);
+					_oContext.fillRect(nLeft + nBorderWidth, nTop + nBorderHeight, nRoundedWidth, nRoundedHeight);
 
           // 안티 앨리어싱 방지 처리
 					_oContext.strokeRect(
@@ -536,34 +532,18 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 					);
 				}
 			}
-			
-			this._bIsPainted = true;
 		};
 			
 		/**
 		 * Make the image from Canvas if the browser supports Data URI.
 		 */
-		Drawing.prototype.makeImage = function () {
-			if (this._bIsPainted) {
-				_safeSetDataURI.call(this, _onMakeImage);
-			}
-		};
+    Drawing.prototype.makeImage = _safeSetDataURI.call(this, _onMakeImage);
 			
-		/**
-		 * Return whether the QRCode is painted or not
-		 * 
-		 * @return {Boolean}
-		 */
-		Drawing.prototype.isPainted = function () {
-			return this._bIsPainted;
-		};
-		
-		/**
+    /**
 		 * Clear the QRCode
 		 */
 		Drawing.prototype.clear = function () {
 			this._oContext.clearRect(0, 0, this._elCanvas.width, this._elCanvas.height);
-			this._bIsPainted = false;
 		};
 		
 		/**
@@ -712,12 +692,41 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 		if (!sText) {
 			throw new Error('makeCode() takes in a text parameter');
 		}
+    this._oDrawing.clear();
 		this._oQRCode = new QRCodeModel(_getTypeNumber(sText, this._htOption.correctLevel), this._htOption.correctLevel);
 		this._oQRCode.addData(sText);
 		this._oQRCode.make();
 		this._el.title = (title !== undefined) ? title : sText;
-		this._oDrawing.draw(this._oQRCode);			
-		this.makeImage();
+
+    if (this._htOption.cover != null) {
+      var _htOption = this._htOption;
+      var drawOptions = JSON.parse(JSON.stringify(_htOption));
+      var overlayDrawOptions = JSON.parse(JSON.stringify(_htOption));
+
+      if (_htOption.overlayOptions) {
+        for (var key in _htOption.overlayOptions) {
+          if (key !== 'text') {
+            overlayDrawOptions[key] = _htOption.overlayOptions[key];
+          }
+        }
+      }
+
+      this._oDrawing._oContext.fillStyle = 'red';
+      this._oDrawing._oContext.fillRect(0, 0, _htOption.width, _htOption.height);
+      this._oDrawing._oContext.save();
+      this._oDrawing.draw(this._oQRCode, drawOptions);
+
+      var coverImage = new Image();
+      coverImage.src = _htOption.cover;
+      coverImage.onload = function() {
+        this._oDrawing._oContext.drawImage(coverImage, 0, 0, _htOption.width, _htOption.height);
+        this._oDrawing.draw(this._oQRCode, overlayDrawOptions);
+        this.makeImage();
+      }.bind(this);
+    } else {
+      this._oDrawing.draw(this._oQRCode, this._htOption);
+      this.makeImage();
+    }
 	};
 	
 	/**
