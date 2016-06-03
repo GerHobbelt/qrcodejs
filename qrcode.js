@@ -1400,9 +1400,6 @@
         }
       }
 
-      this._oDrawing._oContext.fillStyle = 'red';
-      this._oDrawing._oContext.fillRect(0, 0, _htOption.width, _htOption.height);
-      this._oDrawing._oContext.save();
       this._oDrawing.draw(this._oQRCode, drawOptions);
 
       var coverImage = new Image();
