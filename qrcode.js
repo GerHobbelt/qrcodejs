@@ -481,6 +481,15 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 			var nBorderHeight = _htOption.border * nHeight;
 			var nRoundedWidth = Math.round(nWidth);
 			var nRoundedHeight = Math.round(nHeight);
+      var nDrawnWidth = nWidth;
+      var nDrawnHeight = nHeight;
+
+      if (_htOption.blockRatio !== undefined && _htOption.blockRatio < 1) {
+        nDrawnWidth = nWidth * _htOption.blockRatio;
+        nDrawnHeight = nHeight * _htOption.blockRatio;
+        nRoundedWidth = Math.round(nDrawnWidth);
+        nRoundedHeight = Math.round(nDrawnHeight);
+      }
 
 			_elImage.style.display = "none";
 			this.clear();
@@ -504,9 +513,14 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 					_oContext.strokeStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;
 					_oContext.lineWidth = 1;
 					_oContext.fillStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;					
-					_oContext.fillRect(nLeft + nBorderWidth, nTop + nBorderHeight, nWidth, nHeight);
-					
-					// 안티 앨리어싱 방지 처리
+
+          if (_htOption.blockRatio !== undefined && _htOption.blockRatio < 1) {
+            nTop += ((1 - _htOption.blockRatio) / 2) * nHeight;
+            nLeft += ((1 - _htOption.blockRatio) / 2) * nWidth;
+          }
+					_oContext.fillRect(nLeft + nBorderWidth, nTop + nBorderHeight, nDrawnWidth, nDrawnHeight);
+
+          // 안티 앨리어싱 방지 처리
 					_oContext.strokeRect(
 						Math.floor(nLeft + nBorderWidth) + 0.5,
 						Math.floor(nTop + nBorderHeight) + 0.5,
