@@ -2,10 +2,8 @@
   "name": "qrcode.js",
   "version": "0.0.1",
   "homepage": "https://github.com/davidshimjs/qrcodejs",
-  "authors": [
-    "Sangmin Shim", "Sangmin Shim <ssm0123@gmail.com> (http://jaguarjs.com)"
-  ],
-  "description": "Cross-browser QRCode generator for javascript",
+  "authors": "Angela Wang <idu.angela@gmail.com>",
+  "description": "JavaScript Cross-Browser QRCode Generator",
   "main": "qrcode.js",
   "ignore": [
     "bower_components",

@@ -1,0 +1,19 @@
+{
+  "name": "qrcodejs",
+  "version": "1.0.0",
+  "description": "JavaScript Cross-Browser QRCode Generator",
+  "main": "qrcode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelathewebdev/qrcodejs.git"
+  },
+  "author": "Angela Wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/angelathewebdev/qrcodejs/issues"
+  },
+  "homepage": "https://github.com/angelathewebdev/qrcodejs#readme"
+}
