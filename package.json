@@ -20,7 +20,10 @@
     "nodejs",
     "node-canvas"
   ],
-  "author": "davidshimjs",
+  "author": [
+    "Sangmin Shim <ssm0123@gmail.com>",
+    "Angela Wang <idu.angela@gmail.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/davidshimjs/qrcodejs/issues"
