@@ -621,4 +621,4 @@ var QRCode;
 
 // @hacked
 // add node module support
-module && module.exports = QRCode;
+module.exports = QRCode;
