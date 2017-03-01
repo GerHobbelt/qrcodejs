@@ -1,46 +1,13 @@
-# QRCode.js
-QRCode.js is javascript library for making QRCode. QRCode.js supports Cross-browser with HTML5 Canvas and table tag in DOM.
-QRCode.js has no dependencies.
+This is a fork of QRCode.js, which generates a plain and normal QR Code, the goal of this fork is to enable you to create QR Codes with pictures in the background.
 
-## Basic Usages
-```
-<div id="qrcode"></div>
-<script type="text/javascript">
-new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
-</script>
-```
+You can find the original QR Code generator here: https://github.com/davidshimjs/qrcodejs
 
-or with some options
+##Usage
+You put in your link, mailadress wifi password, what ever text you have, and choose a picture from your computer / camera roll. The code gets generated and you just have to click on it to download.
 
-```
-<div id="qrcode"></div>
-<script type="text/javascript">
-var qrcode = new QRCode(document.getElementById("qrcode"), {
-	text: "http://jindo.dev.naver.com/collie",
-	width: 128,
-	height: 128,
-	colorDark : "#000000",
-	colorLight : "#ffffff",
-	correctLevel : QRCode.CorrectLevel.H
-});
-</script>
-```
+##Licence
+MIT
 
-and you can use some methods
-
-```
-qrcode.clear(); // clear the code.
-qrcode.makeCode("http://naver.com"); // make another code.
-```
-
-## Browser Compatibility
-IE6~10, Chrome, Firefox, Safari, Opera, Mobile Safari, Android, Windows Mobile, ETC.
-
-## License
-MIT License
-
-## Contact
-twitter @davidshimjs
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/davidshimjs/qrcodejs/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+##Contact
+@iCCJordan
+github@kalisti.de
