@@ -22,16 +22,17 @@ can not be scanned; adding a white margin fixes this problem)
 
 Needs IE 9+.
 
-## Basic Usages
+## Basic Usage
 
-```
-<div id="qrcode"></div>
-<script type="text/javascript">
-new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
-</script>
-```
 
-or with some options
+One way to use QRCode.js is by declaring a div into which the data will be generated.
+
+    <div id="qrcode"></div>
+    <script type="text/javascript">
+    new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
+    </script>
+
+Options may also be specified as a JSON object in the constructor function:
 
 ```
 <div id="qrcode"></div>
@@ -52,7 +53,7 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 </script>
 ```
 
-and you can use some methods
+and given the `qrcode` object you can use methods like `makeCode()` and `clear()` to modify existing code.
 
 ```
 qrcode.clear(); // clear the code.
@@ -68,5 +69,5 @@ IE6~10, Chrome, Firefox, Safari, Opera, Mobile Safari, Android, Windows Mobile, 
 MIT License
 
 ## Contact
-twitter @davidshimjs
-
+- twitter @davidshimjs
+- twitter @icedwater for documentation

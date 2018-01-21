@@ -55,7 +55,7 @@
     </div>
     <div class="text">
       Size:
-      <input id="size" type="number" value="300" style="width: 4em;">
+      <input id="size" type="number" value="160" style="width: 4em;">
       Margin:
       <input id="margin" type="number" value="20" style="width: 3em;">
       Border:
@@ -90,26 +90,26 @@
       var correction = $('#correction').val();
       $('#qrcode').empty();
       var qrcode = new QRCode($('#qrcode')[0], {
-        width:  parseInt(size) || 300,
-        height: parseInt(size) || 300,
+        width:  parseInt(size) || 160,
+        height: parseInt(size) || 160,
         margin: parseInt(margin) || 0,
         border: parseInt(border) || 0,
         colorDark: dark || '#000',
         colorLight: light || '#fff',
         colorBorder: bordercolor || '#f00',
-        correctLevel: QRCode.CorrectLevel[correction]
+        correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M
       });
       $("#text").off('keyup').on('keyup', function (e) {
         console.log('Render new QRcode', {
           text: $('#text').val(),
-          width:  parseInt(size) || 300,
-          height: parseInt(size) || 300,
+          width:  parseInt(size) || 160,
+          height: parseInt(size) || 160,
           margin: parseInt(margin) || 0,
           border: parseInt(border) || 0,
           colorDark: dark || '#000',
           colorLight: light || '#fff',
           colorBorder: bordercolor || '#f00',
-          correctLevel: QRCode.CorrectLevel[correction]
+          correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M
         });
 
         qrcode.makeCode($('#text').val());
