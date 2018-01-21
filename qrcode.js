@@ -18,9 +18,9 @@
   else if (typeof define == 'function' && define.amd) define(factory)
 	
   /* Global */
-  else root.QRCode = factory(document, navigator);
+  else root.QRCode = factory(document, navigator, CanvasRenderingContext2D);
 	
-}(this, function (document, navigator) {
+}(this, function (document, navigator, CanvasRenderingContext2D) {
 
 // checking if we are not at client side
 if(typeof document === 'undefined' && typeof navigator === 'undefined'){
@@ -68,7 +68,7 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 				return ele;
 			}
 		};
-	var CanvasRenderingContext2D = true;
+	CanvasRenderingContext2D = true;
 	navigator = {};
 }
 
@@ -365,8 +365,8 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 	})() : (function () { // Drawing in Canvas
 		function _onMakeImage() {
 			this._elImage.src = this._elCanvas.toDataURL("image/png");
-			this._elImage.style.display = "inline";   // or "block"
-			this._elCanvas.style.display = "none";	
+			this._elImage.style.display = "block";
+			this._elCanvas.style.display = "block";  // "none"	
 		}
 		
 		// Android 2.1 bug workaround
@@ -648,8 +648,8 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 			colorLight:   "#ffffff",
 			colorBorder:  "#ff0000",
 			correctLevel: QRErrorCorrectLevel.H,
-			border:       4,
-			margin:       0
+			border:       1,
+			margin:       10
 		};
 		
 		if (typeof vOption === 'string') {

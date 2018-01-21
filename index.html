@@ -13,15 +13,21 @@
     background: #000;
   }
   .text {
-    font-size: 30px;
+    font-size: 20px;
     color: #fff;
     margin-bottom: 30px;
     font-family: monospace;
   }
   .text input {
-    font-size: 30px;
+    font-size: 20px;
     text-align: center;
     width: 80%;
+    font-family: monospace;
+  }
+  .text select {
+    font-size: 20px;
+    text-align: center;
+    width: 5em;
     font-family: monospace;
   }
   #qrcode-container {
@@ -30,7 +36,14 @@
     text-align: center;
   }
   #qrcode {
-    display: inline-block;
+    /* display: inline-block; */
+    width: 100%;
+  }
+  #qrcode canvas {
+    margin: 0 auto;
+  }
+  #qrcode img {
+    margin: 0 auto;
   }
 </style>
 </head>
@@ -42,13 +55,17 @@
     </div>
     <div class="text">
       Size:
-      <input id="size" type="number" value="300" style="width: 100px;">
+      <input id="size" type="number" value="300" style="width: 4em;">
       Margin:
-      <input id="margin" type="number" value="20" style="width: 100px;">
+      <input id="margin" type="number" value="20" style="width: 3em;">
+      Border:
+      <input id="border" type="number" value="1" style="width: 3em;">
       Dark:
-      <input id="dark" type="text" value="#000000" style="width: 150px;" maxlength="7">
+      <input id="dark" type="text" value="#000000" style="width: 6em;" maxlength="7">
       Light:
-      <input id="light" type="text" value="#ffffff" style="width: 150px;" maxlength="7">
+      <input id="light" type="text" value="#ffffff" style="width: 6em;" maxlength="7">
+      Border:
+      <input id="bordercolor" type="text" value="#ff0000" style="width: 6em;" maxlength="7">
     </div>
     <div class="text">
       Correction:
@@ -63,22 +80,38 @@
   </div>
 
   <script type="text/javascript">
-    $('#size, #margin, #dark, #light, #correction').on('keyup change', function (e) {
+    $('#size, #margin, #border, #dark, #light, #bordercolor, #correction').on('keyup change', function (e) {
       var size = $('#size').val();
       var margin = $('#margin').val();
+      var border = $('#border').val();
       var dark = $('#dark').val();
       var light = $('#light').val();
+      var bordercolor = $('#bordercolor').val();
       var correction = $('#correction').val();
       $('#qrcode').empty();
       var qrcode = new QRCode($('#qrcode')[0], {
         width:  parseInt(size) || 300,
         height: parseInt(size) || 300,
         margin: parseInt(margin) || 0,
+        border: parseInt(border) || 0,
         colorDark: dark || '#000',
         colorLight: light || '#fff',
+        colorBorder: bordercolor || '#f00',
         correctLevel: QRCode.CorrectLevel[correction]
       });
       $("#text").off('keyup').on('keyup', function (e) {
+        console.log('Render new QRcode', {
+          text: $('#text').val(),
+          width:  parseInt(size) || 300,
+          height: parseInt(size) || 300,
+          margin: parseInt(margin) || 0,
+          border: parseInt(border) || 0,
+          colorDark: dark || '#000',
+          colorLight: light || '#fff',
+          colorBorder: bordercolor || '#f00',
+          correctLevel: QRCode.CorrectLevel[correction]
+        });
+
         qrcode.makeCode($('#text').val());
       }).trigger('keyup');
     }).trigger('change');
