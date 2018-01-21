@@ -3,7 +3,7 @@
  * - Using the 'QRCode for Javascript library'
  * - Fixed dataset of 'QRCode for Javascript library' for support full-spec.
  * - this library has no dependencies.
- * 
+ *
  * @author davidshimjs
  * @see <a href="http://www.d-project.com/" target="_blank">http://www.d-project.com/</a>
  * @see <a href="http://jeromeetienne.github.com/jquery-qrcode/" target="_blank">http://jeromeetienne.github.com/jquery-qrcode/</a>
@@ -83,7 +83,7 @@
     // Licensed under the MIT license:
     //   http://www.opensource.org/licenses/mit-license.php
     //
-    // The word "QR Code" is registered trademark of 
+    // The word "QR Code" is registered trademark of
     // DENSO WAVE INCORPORATED
     //   http://www.denso-wave.com/qrcode/faqpatent-e.html
     //
@@ -192,7 +192,7 @@
                 if (row + r <= -1 || this.moduleCount <= row + r) continue;
                 for (var c = -1; c <= 7; c++) {
                     if (col + c <= -1 || this.moduleCount <= col + c) continue;
-                    if ((0 <= r && r <= 6 && (c == 0 || c == 6)) || (0 <= c && c <= 6 && (r == 0 || r == 6)) || (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
+                    if ((0 <= r && r <= 6 && (c === 0 || c === 6)) || (0 <= c && c <= 6 && (r === 0 || r === 6)) || (2 <= r && r <= 4 && 2 <= c && c <= 4)) {
                         this.modules[row + r][col + c] = true;
                     } else {
                         this.modules[row + r][col + c] = false;
@@ -206,7 +206,7 @@
             for (var i = 0; i < 8; i++) {
                 this.makeImpl(true, i);
                 var lostPoint = QRUtil.getLostPoint(this);
-                if (i == 0 || minLostPoint > lostPoint) {
+                if (i === 0 || minLostPoint > lostPoint) {
                     minLostPoint = lostPoint;
                     pattern = i;
                 }
@@ -239,13 +239,13 @@
                 if (this.modules[r][6] != null) {
                     continue;
                 }
-                this.modules[r][6] = (r % 2 == 0);
+                this.modules[r][6] = (r % 2 === 0);
             }
             for (var c = 8; c < this.moduleCount - 8; c++) {
                 if (this.modules[6][c] != null) {
                     continue;
                 }
-                this.modules[6][c] = (c % 2 == 0);
+                this.modules[6][c] = (c % 2 === 0);
             }
         },
         setupPositionAdjustPattern: function() {
@@ -259,7 +259,7 @@
                     }
                     for (var r = -2; r <= 2; r++) {
                         for (var c = -2; c <= 2; c++) {
-                            if (r == -2 || r == 2 || c == -2 || c == 2 || (r == 0 && c == 0)) {
+                            if (r === -2 || r === 2 || c === -2 || c === 2 || (r === 0 && c === 0)) {
                                 this.modules[row + r][col + c] = true;
                             } else {
                                 this.modules[row + r][col + c] = false;
@@ -272,11 +272,9 @@
         setupTypeNumber: function(test) {
             var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
             for (var i = 0; i < 18; i++) {
-                var mod = (!test && ((bits >> i) & 1) == 1);
+                var mod = (!test && ((bits >> i) & 1) === 1);
                 this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
-            }
-            for (var i = 0; i < 18; i++) {
-                var mod = (!test && ((bits >> i) & 1) == 1);
+
                 this.modules[i % 3 + this.moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
             }
         },
@@ -284,7 +282,7 @@
             var data = (this.errorCorrectLevel << 3) | maskPattern;
             var bits = QRUtil.getBCHTypeInfo(data);
             for (var i = 0; i < 15; i++) {
-                var mod = (!test && ((bits >> i) & 1) == 1);
+                var mod = (!test && ((bits >> i) & 1) === 1);
                 if (i < 6) {
                     this.modules[i][8] = mod;
                 } else if (i < 8) {
@@ -292,9 +290,7 @@
                 } else {
                     this.modules[this.moduleCount - 15 + i][8] = mod;
                 }
-            }
-            for (var i = 0; i < 15; i++) {
-                var mod = (!test && ((bits >> i) & 1) == 1);
+
                 if (i < 8) {
                     this.modules[8][this.moduleCount - i - 1] = mod;
                 } else if (i < 9) {
@@ -311,13 +307,15 @@
             var bitIndex = 7;
             var byteIndex = 0;
             for (var col = this.moduleCount - 1; col > 0; col -= 2) {
-                if (col == 6) col--;
+                if (col === 6) {
+                    col--;
+                }
                 while (true) {
                     for (var c = 0; c < 2; c++) {
                         if (this.modules[row][col - c] == null) {
                             var dark = false;
                             if (byteIndex < data.length) {
-                                dark = (((data[byteIndex] >>> bitIndex) & 1) == 1);
+                                dark = (((data[byteIndex] >>> bitIndex) & 1) === 1);
                             }
                             var mask = QRUtil.getMask(maskPattern, row, col - c);
                             if (mask) {
@@ -325,7 +323,7 @@
                             }
                             this.modules[row][col - c] = dark;
                             bitIndex--;
-                            if (bitIndex == -1) {
+                            if (bitIndex === -1) {
                                 byteIndex++;
                                 bitIndex = 7;
                             }
@@ -366,7 +364,7 @@
         if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
             buffer.put(0, 4);
         }
-        while (buffer.getLengthInBits() % 8 != 0) {
+        while (buffer.getLengthInBits() % 8 !== 0) {
             buffer.putBit(false);
         }
         while (true) {
@@ -512,7 +510,7 @@
         },
         getBCHDigit: function(data) {
             var digit = 0;
-            while (data != 0) {
+            while (data !== 0) {
                 digit++;
                 data >>>= 1;
             }
@@ -524,21 +522,21 @@
         getMask: function(maskPattern, i, j) {
             switch (maskPattern) {
                 case QRMaskPattern.PATTERN000:
-                    return (i + j) % 2 == 0;
+                    return (i + j) % 2 === 0;
                 case QRMaskPattern.PATTERN001:
-                    return i % 2 == 0;
+                    return i % 2 === 0;
                 case QRMaskPattern.PATTERN010:
-                    return j % 3 == 0;
+                    return j % 3 === 0;
                 case QRMaskPattern.PATTERN011:
-                    return (i + j) % 3 == 0;
+                    return (i + j) % 3 === 0;
                 case QRMaskPattern.PATTERN100:
-                    return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
+                    return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0;
                 case QRMaskPattern.PATTERN101:
-                    return (i * j) % 2 + (i * j) % 3 == 0;
+                    return (i * j) % 2 + (i * j) % 3 === 0;
                 case QRMaskPattern.PATTERN110:
-                    return ((i * j) % 2 + (i * j) % 3) % 2 == 0;
+                    return ((i * j) % 2 + (i * j) % 3) % 2 === 0;
                 case QRMaskPattern.PATTERN111:
-                    return ((i * j) % 3 + (i + j) % 2) % 2 == 0;
+                    return ((i * j) % 3 + (i + j) % 2) % 2 === 0;
                 default:
                     throw new Error("bad maskPattern:" + maskPattern);
             }
@@ -609,7 +607,7 @@
                             if (col + c < 0 || moduleCount <= col + c) {
                                 continue;
                             }
-                            if (r == 0 && c == 0) {
+                            if (r === 0 && c === 0) {
                                 continue;
                             }
                             if (dark == qrCode.isDark(row + r, col + c)) {
@@ -629,7 +627,7 @@
                     if (qrCode.isDark(row + 1, col)) count++;
                     if (qrCode.isDark(row, col + 1)) count++;
                     if (qrCode.isDark(row + 1, col + 1)) count++;
-                    if (count == 0 || count == 4) {
+                    if (count === 0 || count === 4) {
                         lostPoint += 3;
                     }
                 }
@@ -691,11 +689,11 @@
     }
 
     function QRPolynomial(num, shift) {
-        if (num.length == undefined) {
+        if (num.length == null) {
             throw new Error(num.length + "/" + shift);
         }
         var offset = 0;
-        while (offset < num.length && num[offset] == 0) {
+        while (offset < num.length && num[offset] === 0) {
             offset++;
         }
         this.num = new Array(num.length - offset + shift);
@@ -703,6 +701,7 @@
             this.num[i] = num[i + offset];
         }
     }
+
     QRPolynomial.prototype = {
         get: function(index) {
             return this.num[index];
@@ -903,7 +902,7 @@
     ];
     QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
         var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
-        if (rsBlock == undefined) {
+        if (rsBlock == null) {
             throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
         }
         var length = rsBlock.length / 3;
@@ -940,11 +939,11 @@
     QRBitBuffer.prototype = {
         get: function(index) {
             var bufIndex = Math.floor(index / 8);
-            return ((this.buffer[bufIndex] >>> (7 - index % 8)) & 1) == 1;
+            return ((this.buffer[bufIndex] >>> (7 - index % 8)) & 1) === 1;
         },
         put: function(num, length) {
             for (var i = 0; i < length; i++) {
-                this.putBit(((num >>> (length - i - 1)) & 1) == 1);
+                this.putBit(((num >>> (length - i - 1)) & 1) === 1);
             }
         },
         getLengthInBits: function() {
@@ -1005,7 +1004,7 @@
     ];
 
     function _isSupportCanvas() {
-        return typeof CanvasRenderingContext2D != "undefined";
+        return typeof CanvasRenderingContext2D !== "undefined";
     }
 
     // android 2.x doesn't support Data-URI spec
@@ -1025,7 +1024,12 @@
         return android;
     }
 
-    var svgDrawer = (function() {
+    /**
+     * draw by SVG
+     * @returns {Function}
+     * @constructor
+     */
+    function createSVGDrawer() {
 
         var Drawing = function(el, htOption) {
             this._el = el;
@@ -1089,12 +1093,18 @@
                 this._el.removeChild(this._el.lastChild);
         };
         return Drawing;
-    })();
+    }
+
+    var svgDrawer = null;
 
     var useSVG = document.documentElement.tagName.toLowerCase() === "svg";
 
-    // Drawing in DOM by using Table tag
-    var Drawing = useSVG ? svgDrawer : !_isSupportCanvas() ? (function() {
+    /**
+     * draw by table
+     * @returns {Function}
+     * @constructor
+     */
+    function createTableDrawer() {
         var Drawing = function(el, htOption) {
             this._el = el;
             this._htOption = htOption;
@@ -1102,7 +1112,7 @@
 
         /**
          * Draw the QRCode
-         * 
+         *
          * @param {QRCode} oQRCode
          */
         Drawing.prototype.draw = function(oQRCode) {
@@ -1173,11 +1183,17 @@
         };
 
         return Drawing;
-    })() : (function() { // Drawing in Canvas
+    }
+
+    /**
+     * draw by canvas
+     * @returns {Function}
+     */
+    function createCanvasDrawer() { // Drawing in Canvas
         function _onMakeImage() {
             this._elImage.src = this._elCanvas.toDataURL("image/png");
-            this._elImage.style.display = "block";
-            this._elCanvas.style.display = "block"; // "none"	
+            this._elImage.style.display = "initial";
+            this._elCanvas.style.display = "initial";
         }
 
         // Android 2.1 bug workaround
@@ -1190,7 +1206,7 @@
                     for (var i = arguments.length - 1; i >= 1; i--) {
                         arguments[i] = arguments[i] * factor;
                     }
-                } else if (typeof dw == "undefined") {
+                } else if (typeof dw === "undefined") {
                     arguments[1] *= factor;
                     arguments[2] *= factor;
                     arguments[3] *= factor;
@@ -1203,7 +1219,7 @@
 
         /**
          * Check whether the user's browser supports Data URI or not
-         * 
+         *
          * @private
          * @param {Function} fSuccess Occurs if it supports Data URI
          * @param {Function} fFail Occurs if it doesn't support Data URI
@@ -1245,10 +1261,10 @@
 
         /**
          * Drawing QRCode by using canvas
-         * 
+         *
          * @constructor
          * @param {HTMLElement} el
-         * @param {Object} htOption QRCode Options 
+         * @param {Object} htOption QRCode Options
          */
         var Drawing = function(el, htOption) {
             this._android = _getAndroid();
@@ -1257,23 +1273,37 @@
             this._elCanvas = el.ownerDocument.createElement("canvas");
             this._elCanvas.width = htOption.width;
             this._elCanvas.height = htOption.height;
-            el.appendChild(this._elCanvas);
+            /* ignore canvas */
+            //el.appendChild(this._elCanvas);
             this._el = el;
             this._oContext = this._elCanvas.getContext("2d");
-            this._elImage = el.ownerDocument.createElement("img");
-            this._elImage.className = "qrcode-img";
-            this._elImage.alt = "Scan me!";
-            this._elImage.style.display = "none";
-            this._el.appendChild(this._elImage);
+            /* add class and targetImage in htOption, create new img only when no targetImage */
+            var targetImage = htOption.targetImage;
+            this._elImage = targetImage || el.ownerDocument.createElement("img");
+
+            if (!targetImage) {
+                if (htOption.class) {
+                    this._elImage.className = htOption.class;
+                }
+                this._elImage.alt = "Scan me!";
+                this._elImage.style.display = "none";
+                this._el.appendChild(this._elImage);
+            }
             this._bSupportDataURI = null;
+
+            this._draw = htOption.draw || "drawOffscreen";
         };
+
+        Drawing.prototype.draw = function(oQRCode) {
+            Drawing.prototype[this._draw].call(this, oQRCode);
+        }
 
         /**
          * Draw the QRCode
-         * 
-         * @param {QRCode} oQRCode 
+         *
+         * @param {QRCode} oQRCode
          */
-        Drawing.prototype.draw = function(oQRCode, _htOption) {
+        Drawing.prototype.drawOriginal = function(oQRCode, _htOption) {
             var _elImage = this._elImage;
             var _oContext = this._oContext;
             var width = _htOption.width;
@@ -1298,6 +1328,7 @@
             }
 
             _elImage.style.display = "none";
+
             _oContext.fillStyle = _htOption.colorLight;
             _oContext.fillRect(0, 0, width, height);
 
@@ -1337,19 +1368,376 @@
                         Math.ceil(nLeft + nBorderWidth) - 0.5,
                         Math.ceil(nTop + nBorderHeight) - 0.5,
                         nRoundedWidth,
-                        nRoundedHeight
-                    );
+                        nRoundedHeight);
                 }
             }
         };
 
         /**
+         * Draw the QRCode
+         *
+         * @param {QRCode} oQRCode
+         */
+        Drawing.prototype.drawBlackOnly = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _oContext = this._oContext;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = _htOption.width / nCount;
+            var nHeight = _htOption.height / nCount;
+            var nCeilWidth = Math.ceil(nWidth);
+            var nCeilHeight = Math.ceil(nHeight);
+
+            _elImage.style.display = "none";
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = oQRCode.modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = ~~(col * nWidth);
+                    var nTop = ~~(row * nHeight);
+
+                    _oContext.fillRect(nLeft, nTop, nCeilWidth, nCeilHeight);
+                }
+            }
+        };
+
+
+        Drawing.prototype.drawBlackOnlyStrokeFill = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _oContext = this._oContext;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = _htOption.width / nCount;
+            var nHeight = _htOption.height / nCount;
+            var nRoundedWidth = Math.round(nWidth);
+            var nRoundedHeight = Math.round(nHeight);
+
+            // nWidth = nRoundedWidth;
+            // nHeight = nRoundedHeight;
+
+            _elImage.style.display = "none";
+
+            //_oContext.fillStyle = _htOption.colorLight;
+            //_oContext.fillRect(0,0,_htOption.width,_htOption.height);
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+            _oContext.beginPath();
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = oQRCode.modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = col * nWidth;
+                    var nTop = row * nHeight;
+
+                    _oContext.rect(nLeft, nTop, nWidth, nHeight);
+                }
+            }
+            _oContext.fill();
+        };
+
+        Drawing.prototype.drawBlackOnlyAntiAlias = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _oContext = this._oContext;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = _htOption.width / nCount;
+            var nHeight = _htOption.height / nCount;
+            var nRoundedWidth = Math.round(nWidth);
+            var nRoundedHeight = Math.round(nHeight);
+
+            // nWidth = nRoundedWidth;
+            // nHeight = nRoundedHeight;
+
+            _elImage.style.display = "none";
+
+            _oContext.fillStyle = _htOption.colorLight;
+            _oContext.fillRect(0, 0, _htOption.width, _htOption.height);
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = oQRCode.modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = col * nWidth;
+                    var nTop = row * nHeight;
+
+                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
+                }
+            }
+
+            // Anti-aliasing removal
+            var imageData = this._oContext.getImageData(0, 0, _htOption.width, _htOption.height);
+            var data = imageData.data;
+            var height = _htOption.height;
+            var width = _htOption.width;
+            for (var y = 0; y < height; ++y) {
+                for (var x = 0; x < width; ++x) {
+                    var index = (y * width + x) * 4;
+                    //data[index + 3] = 255;
+                    if (data[index] !== 0 && data[index] !== 255) {
+                        data[index] = 255;
+                        data[++index] = 255;
+                        data[++index] = 255;
+                        data[++index] = 255;
+                    }
+                }
+            }
+
+            this._oContext.putImageData(imageData, 0, 0);
+            // End Anti-aliasing
+        };
+
+
+        // offscreen
+        Drawing.prototype.drawOffscreen = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = Math.floor(_htOption.width / nCount);
+            var nHeight = Math.floor(_htOption.height / nCount);
+            var modules = oQRCode.modules;
+
+            var can2 = document.createElement('canvas');
+            can2.width = nWidth * nCount;
+            can2.height = nHeight * nCount;
+
+            var _oContext = can2.getContext('2d');
+
+            _elImage.style.display = "none";
+
+            _oContext.fillStyle = _htOption.colorLight;
+            _oContext.fillRect(0, 0, can2.width, can2.height);
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            //_oContext.beginPath();
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = col * nWidth;
+                    var nTop = row * nHeight;
+
+                    //_oContext.rect(nLeft,nTop,nWidth,nHeight);
+                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
+                }
+            }
+
+            //_oContext.fill();
+            this._oContext.drawImage(can2, 0, 0, _htOption.width, _htOption.height);
+        }
+
+        // offscreen
+        Drawing.prototype.drawOffscreenStrokeFill = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = Math.floor(_htOption.width / nCount);
+            var nHeight = Math.floor(_htOption.height / nCount);
+            var modules = oQRCode.modules;
+
+            var can2 = document.createElement('canvas');
+            can2.width = nWidth * nCount;
+            can2.height = nHeight * nCount;
+
+            var _oContext = can2.getContext('2d');
+
+            _elImage.style.display = "none";
+
+            _oContext.fillStyle = _htOption.colorLight;
+            _oContext.fillRect(0, 0, can2.width, can2.height);
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            _oContext.beginPath();
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = col * nWidth;
+                    var nTop = row * nHeight;
+
+                    _oContext.rect(nLeft, nTop, nWidth, nHeight);
+                    //_oContext.fillRect(nLeft,nTop,nWidth,nHeight);
+                }
+            }
+
+            _oContext.fill();
+            this._oContext.drawImage(can2, 0, 0, _htOption.width, _htOption.height);
+        }
+
+        // offscreen simple anti-alias
+        Drawing.prototype.drawOffscreenAntiAlias = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = Math.floor(_htOption.width / nCount);
+            var nHeight = Math.floor(_htOption.height / nCount);
+
+            var can2 = document.createElement('canvas');
+            can2.width = nWidth * nCount;
+            can2.height = nHeight * nCount;
+
+            var _oContext = can2.getContext('2d');
+
+            _elImage.style.display = "none";
+
+            _oContext.fillStyle = _htOption.colorLight;
+            _oContext.fillRect(0, 0, can2.width, can2.height);
+
+            _oContext.strokeStyle = _htOption.colorDark;
+            _oContext.fillStyle = _htOption.colorDark;
+            _oContext.lineWidth = 1;
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            //_oContext.beginPath();
+            for (var row = 0; row < nCount; row++) {
+                for (var col = 0; col < nCount; col++) {
+                    var bIsDark = oQRCode.modules[row][col];
+                    if (!bIsDark) {
+                        continue;
+                    }
+
+                    var nLeft = col * nWidth;
+                    var nTop = row * nHeight;
+
+                    //_oContext.rect(nLeft,nTop,nWidth,nHeight);
+                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
+                }
+            }
+
+            //_oContext.fill();
+            this._oContext.drawImage(can2, 0, 0, _htOption.width, _htOption.height);
+
+            // Anti-aliasing removal
+            var imageData = this._oContext.getImageData(0, 0, _htOption.width, _htOption.height);
+            var data = imageData.data;
+            var height = _htOption.height;
+            var width = _htOption.width;
+            for (var y = 0; y < height; ++y) {
+                for (var x = 0; x < width; ++x) {
+                    var index = (y * width + x) * 4;
+                    if (data[index] !== 0 && data[index] !== 255) {
+                        data[index] = 255;
+                        data[++index] = 255;
+                        data[++index] = 255;
+                        data[++index] = 255;
+                    }
+                }
+            }
+
+            this._oContext.putImageData(imageData, 0, 0);
+            // End Anti-aliasing
+        }
+
+        // ImageData
+        Drawing.prototype.drawToImageData = function(oQRCode) {
+            var _elImage = this._elImage;
+            var _htOption = this._htOption;
+
+            var nCount = oQRCode.getModuleCount();
+            var nWidth = Math.floor(_htOption.width / nCount);
+            var nHeight = Math.floor(_htOption.height / nCount);
+
+            var can2 = document.createElement('canvas');
+            can2.width = nWidth * nCount;
+            can2.height = nHeight * nCount;
+
+            var _oContext = can2.getContext('2d');
+            var imageData = _oContext.getImageData(0, 0, can2.width, can2.height);
+            var data = imageData.data;
+            var modules = oQRCode.modules;
+            var x, y, color, index, canWidth = can2.width,
+                row;
+            var xMult = 4 * nWidth;
+            var yMult = canWidth * nHeight;
+            var outerX, outerY;
+
+            _elImage.style.display = "none";
+
+            for (var y = 0; y < can2.height; ++y) {
+                var row = Math.floor(y / nHeight);
+                for (var x = 0; x < can2.width; ++x) {
+                    var color = oQRCode.modules[row][(x / nWidth) | (x / nWidth)] ? 0 : 255;
+
+                    var index = (y * can2.width + x) * 4;
+                    data[index] = color;
+                    data[++index] = color;
+                    data[++index] = color;
+                    data[++index] = 255;
+                }
+            }
+
+            _oContext.webkitImageSmoothingEnabled = false;
+            _oContext.mozImageSmoothingEnabled = false;
+            _oContext.imageSmoothingEnabled = false;
+
+            _oContext.putImageData(imageData, 0, 0);
+            this._oContext.drawImage(can2, 0, 0, _htOption.width, _htOption.height);
+        }
+
+        /**
          * Make the image from Canvas if the browser supports Data URI.
          */
-		Drawing.prototype.makeImage = function () {
-				_safeSetDataURI.call(this, _onMakeImage);
-		};
-			
+        Drawing.prototype.makeImage = function() {
+            _safeSetDataURI.call(this, _onMakeImage);
+        };
+
         /**
          * Clear the QRCode
          */
@@ -1370,11 +1758,14 @@
         };
 
         return Drawing;
-    })();
+    }
+
+    // Drawing in DOM by using Table tag
+    var Drawing = useSVG ? (svgDrawer = createSVGDrawer()) : !_isSupportCanvas() ? createTableDrawer() : createCanvasDrawer();
 
     /**
      * Get the type by string length
-     * 
+     *
      * @private
      * @param {String} sText
      * @param {Number} nCorrectLevel
@@ -1424,7 +1815,7 @@
     /**
      * @class QRCode
      * @constructor
-     * @example 
+     * @example
      * new QRCode(document.getElementById("test"), "http://jindo.dev.naver.com/collie");
      *
      * @example
@@ -1433,7 +1824,7 @@
      *    width : 128,
      *    height : 128
      * });
-     * 
+     *
      * oQRCode.clear(); // Clear the QRCode.
      * oQRCode.makeCode("http://map.naver.com"); // Re-create the QRCode.
      *
@@ -1442,7 +1833,7 @@
      * @param {String} vOption.text QRCode link data
      * @param {Number} [vOption.width=256]
      * @param {Number} [vOption.height=256]
-     * @param {Number} [vOption.border=4] default to 4 modules
+     * @param {Number} [vOption.border=4] default to 1 module
      * @param {String} [vOption.colorDark="#000000"]
      * @param {String} [vOption.colorLight="#ffffff"]
      * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H] 
@@ -1458,6 +1849,7 @@
             correctLevel: QRErrorCorrectLevel.H,
             border: 1,
             margin: 10,
+            class: "qrcode-img",
             useSVG: false
         };
 
@@ -1476,7 +1868,7 @@
             }
         }
 
-        if (typeof el == "string") {
+        if (typeof el === "string") {
             el = document.getElementById(el);
         }
 
@@ -1497,7 +1889,7 @@
 
     /**
      * Make the QRCode
-     * 
+     *
      * @param {String} sText link data
      */
     QRCode.prototype.makeCode = function(sText, title) {
@@ -1542,11 +1934,11 @@
      * Make the Image from Canvas element
      * - It occurs automatically
      * - Android below 3 doesn't support Data-URI spec.
-     * 
+     *
      * @private
      */
     QRCode.prototype.makeImage = function() {
-        if (typeof this._oDrawing.makeImage == "function" && (!this._android || this._android >= 3)) {
+        if (typeof this._oDrawing.makeImage === "function" && (!_getAndroid() || _getAndroid() >= 3)) {
             this._oDrawing.makeImage();
         }
     };
