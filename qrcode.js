@@ -8,9 +8,24 @@
  * @see <a href="http://www.d-project.com/" target="_blank">http://www.d-project.com/</a>
  * @see <a href="http://jeromeetienne.github.com/jquery-qrcode/" target="_blank">http://jeromeetienne.github.com/jquery-qrcode/</a>
  */
-var QRCode;
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function() {
+            return (root.QRCode = factory());
+        });
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like enviroments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals
+        root.QRCode = factory();
+    }
+}(this, function() {
+    var QRCode;
 
-(function() {
     //---------------------------------------------------------------------
     // QRCode for JavaScript
     //
@@ -639,6 +654,7 @@ var QRCode;
             this.num[i] = num[i + offset];
         }
     }
+
     QRPolynomial.prototype = {
         get: function(index) {
             return this.num[index];
@@ -961,7 +977,12 @@ var QRCode;
         return android;
     }
 
-    var svgDrawer = (function() {
+    /**
+     * draw by SVG
+     * @returns {Function}
+     * @constructor
+     */
+    function createSVGDrawer() {
 
         var Drawing = function(el, htOption) {
             this._el = el;
@@ -1023,12 +1044,18 @@ var QRCode;
                 this._el.removeChild(this._el.lastChild);
         };
         return Drawing;
-    })();
+    }
+
+    var svgDrawer = null;
 
     var useSVG = document.documentElement.tagName.toLowerCase() === "svg";
 
-    // Drawing in DOM by using Table tag
-    var Drawing = useSVG ? svgDrawer : !_isSupportCanvas() ? (function() {
+    /**
+     * draw by table
+     * @returns {Function}
+     * @constructor
+     */
+    function createTableDrawer() {
         var Drawing = function(el, htOption) {
             this._el = el;
             this._htOption = htOption;
@@ -1078,10 +1105,16 @@ var QRCode;
         };
 
         return Drawing;
-    })() : (function() { // Drawing in Canvas
+    }
+
+    /**
+     * draw by canvas
+     * @returns {Function}
+     */
+    function createCanvasDrawer() { // Drawing in Canvas
         function _onMakeImage() {
             this._elImage.src = this._elCanvas.toDataURL("image/png");
-            this._elImage.style.display = "block";
+            this._elImage.style.display = "initial";
             this._elCanvas.style.display = "none";
         }
 
@@ -1163,14 +1196,23 @@ var QRCode;
             this._elCanvas = document.createElement("canvas");
             this._elCanvas.width = htOption.width;
             this._elCanvas.height = htOption.height;
-            el.appendChild(this._elCanvas);
+            /* ignore canvas */
+            //el.appendChild(this._elCanvas);
             this._el = el;
             this._oContext = this._elCanvas.getContext("2d");
             this._bIsPainted = false;
-            this._elImage = document.createElement("img");
-            this._elImage.alt = "Scan me!";
-            this._elImage.style.display = "none";
-            this._el.appendChild(this._elImage);
+            /* add class and targetImage in htOption, create new img only when no targetImage */
+            var targetImage = htOption.targetImage;
+            this._elImage = targetImage || document.createElement("img");
+
+            if (!targetImage) {
+                if (htOption.class) {
+                    this._elImage.className = htOption.class;
+                }
+                this._elImage.alt = "Scan me!";
+                this._elImage.style.display = "none";
+                this._el.appendChild(this._elImage);
+            }
             this._bSupportDataURI = null;
 
             this._draw = htOption.draw || "drawOffscreen";
@@ -1647,7 +1689,10 @@ var QRCode;
         };
 
         return Drawing;
-    })();
+    }
+
+    // Drawing in DOM by using Table tag
+    var Drawing = useSVG ? (svgDrawer = createSVGDrawer()) : !_isSupportCanvas() ? createTableDrawer() : createCanvasDrawer();
 
     /**
      * Get the type by string length
@@ -1706,9 +1751,9 @@ var QRCode;
      *
      * @example
      * var oQRCode = new QRCode("test", {
-     *  text : "http://naver.com",
-     *  width : 128,
-     *  height : 128
+     *    text : "http://naver.com",
+     *    width : 128,
+     *    height : 128
      * });
      *
      * oQRCode.clear(); // Clear the QRCode.
@@ -1802,4 +1847,6 @@ var QRCode;
      * @name QRCode.CorrectLevel
      */
     QRCode.CorrectLevel = QRErrorCorrectLevel;
-})();
+
+    return QRCode;
+}));
