@@ -1346,8 +1346,10 @@
         /**
          * Make the image from Canvas if the browser supports Data URI.
          */
-        Drawing.prototype.makeImage = _safeSetDataURI.call(this, _onMakeImage);
-
+		Drawing.prototype.makeImage = function () {
+				_safeSetDataURI.call(this, _onMakeImage);
+		};
+			
         /**
          * Clear the QRCode
          */
