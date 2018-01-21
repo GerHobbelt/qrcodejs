@@ -684,6 +684,9 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 	 * @param {String} sText link data
 	 */
 	QRCode.prototype.makeCode = function (sText, title) {
+		if (!sText) {
+			throw new Error('makeCode() takes in a text parameter');
+		}
 		this._oQRCode = new QRCodeModel(_getTypeNumber(sText, this._htOption.correctLevel), this._htOption.correctLevel);
 		this._oQRCode.addData(sText);
 		this._oQRCode.make();
