@@ -642,7 +642,7 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 	 * @param {String} [vOption.colorLight="#ffffff"]
 	 * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H] 
 	 */
-	QRCode = function (el, vOption) {
+	var QRCode = function (el, vOption) {
 		this._htOption = {
 			width:        256,
 			height:       256,
