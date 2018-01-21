@@ -8,6 +8,7 @@
   "description": "Cross-browser QRCode generator for javascript",
   "main": "qrcode.js",
   "ignore": [
+    "**/.*",
     "bower_components",
     "node_modules",
     "index.html",
