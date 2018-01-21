@@ -12,10 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidshimjs/qrcodejs.git"
+    "url": "git://github.com/davidshimjs/qrcodejs.git"
   },
   "keywords": [
+    "qr",
     "qrcode",
+    "qr-code",
     "server",
     "nodejs",
     "node-canvas"
@@ -28,5 +30,6 @@
   "bugs": {
     "url": "https://github.com/davidshimjs/qrcodejs/issues"
   },
-  "homepage": "https://github.com/davidshimjs/qrcodejs"
+  "homepage": "https://github.com/davidshimjs/qrcodejs",
+  "readmeFilename": "README.md"
 }
