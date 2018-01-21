@@ -18,9 +18,60 @@
   else if (typeof define == 'function' && define.amd) define(factory)
 	
   /* Global */
-  else root.QRCode = factory()
+  else root.QRCode = factory(document, navigator);
 	
-}(this, function () {
+}(this, function (document, navigator) {
+
+// checking if we are not at client side
+if(typeof document === 'undefined' && typeof navigator === 'undefined'){
+	var Canvas = require('canvas');
+	var Image = Canvas.Image;
+	var fs = require('fs');
+	/**
+	 * createFakeElementById
+	 * 
+	 * return an object fake the dom element
+	 * 
+	 * @id {String}
+	 * @return {Object}
+	 */
+	var createFakeElementById = function(id){
+		this.id = id;
+		this.childNodes = [];
+		this.style = {};
+	}
+
+	createFakeElementById.prototype.appendChild = function(el){
+		this.childNodes.push(el);
+	}
+
+	document = {
+			documentElement:{
+				tagName:"div"
+			},
+			getElementById: function(id){
+				return new createFakeElementById(id);
+			},
+			createElement: function(tagName){
+				var ele;
+				// only care about 'canvas' or 'img'
+				switch(tagName){
+					case 'canvas':
+						ele = new Canvas();
+						ele.style = {};
+						break;
+					case 'img':
+						ele = new Image();
+						ele.style = {};
+						break;
+				}
+				return ele;
+			}
+		};
+	var CanvasRenderingContext2D = true;
+	navigator = {};
+}
+
 	//---------------------------------------------------------------------
 	// QRCode for JavaScript
 	//
@@ -286,7 +337,7 @@
 		function _onMakeImage() {
 			this._elImage.src = this._elCanvas.toDataURL("image/png");
 			this._elImage.style.display = "inline";   // or "block"
-			this._elCanvas.style.display = "none";			
+			this._elCanvas.style.display = "none";	
 		}
 		
 		// Android 2.1 bug workaround
@@ -561,7 +612,9 @@
 		// Overwrites options
 		if (vOption) {
 			for (var i in vOption) {
-				this._htOption[i] = vOption[i];
+				if (Object.prototype.hasOwnProperty.call(vOption, vOption[i])) {
+					this._htOption[i] = vOption[i];
+        }
 			}
 		}
 		
@@ -621,7 +674,14 @@
 	 * @name QRCode.CorrectLevel
 	 */
 	QRCode.CorrectLevel = QRErrorCorrectLevel;
-	
+
+	// add write method to store qrcode on disk.
+	if (typeof fs !== 'undefined') {
+		QRCode.prototype.write = function (path) {
+			fs.writeFile(path, this._oDrawing._elCanvas.toBuffer());
+		}
+	}
+		
 	return QRCode;
 	
 }));
