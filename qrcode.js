@@ -467,10 +467,13 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
             var _elImage = this._elImage;
             var _oContext = this._oContext;
             var _htOption = this._htOption;
+            var width = _htOption.width;
+            var height = _htOption.height;
+            var margin = _htOption.margin;
             
 			var nCount = oQRCode.getModuleCount();
-			var nWidth = _htOption.width / (nCount + 2 * _htOption.border);
-			var nHeight = _htOption.height / (nCount + 2 * _htOption.border);
+			var nWidth = (width - margin * 2) / (nCount + 2 * _htOption.border);
+			var nHeight = (height - margin * 2) / (nCount + 2 * _htOption.border);
 			var nBorderWidth = _htOption.border * nWidth;
 			var nBorderHeight = _htOption.border * nHeight;
 			var nRoundedWidth = Math.round(nWidth);
@@ -478,21 +481,23 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 
 			_elImage.style.display = "none";
 			this.clear();
+			_oContext.fillStyle = _htOption.colorLight;
+			_oContext.fillRect(0, 0, width, height);
 			
-            // Fill quiet zone with light color
-            _oContext.strokeStyle = _htOption.colorLight;
+            // Fill quiet zone's border with border color
+            _oContext.strokeStyle = _htOption.colorBorder;
             _oContext.lineWidth = 1;
-            _oContext.fillStyle = _htOption.colorLight;					
+            _oContext.fillStyle = _htOption.colorBorder;					
             _oContext.fillRect(0, 0, _htOption.width, nBorderHeight);
             _oContext.fillRect(0, _htOption.height - nBorderHeight, _htOption.width, _htOption.height);
             _oContext.fillRect(0, nBorderHeight, nBorderWidth, _htOption.height - nBorderHeight);
             _oContext.fillRect(_htOption.width - nBorderWidth, nBorderHeight, _htOption.width, _htOption.height - nBorderHeight);
-
+			
 			for (var row = 0; row < nCount; row++) {
 				for (var col = 0; col < nCount; col++) {
 					var bIsDark = oQRCode.isDark(row, col);
-					var nLeft = col * nWidth;
-					var nTop = row * nHeight;
+					var nLeft = col * nWidth + margin;
+					var nTop = row * nHeight + margin;
 					_oContext.strokeStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;
 					_oContext.lineWidth = 1;
 					_oContext.fillStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;					
@@ -636,13 +641,15 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 	 */
 	QRCode = function (el, vOption) {
 		this._htOption = {
-			width : 256, 
-			height : 256,
-			border: 4,
-			typeNumber : 4,
-			colorDark : "#000000",
-			colorLight : "#ffffff",
-			correctLevel : QRErrorCorrectLevel.H
+			width:        256,
+			height:       256,
+			typeNumber:   4,
+			colorDark:    "#000000",
+			colorLight:   "#ffffff",
+			colorBorder:  "#ff0000",
+			correctLevel: QRErrorCorrectLevel.H,
+			border:       4,
+			margin:       0
 		};
 		
 		if (typeof vOption === 'string') {
