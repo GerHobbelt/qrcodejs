@@ -48,7 +48,8 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 	margin:       0,
 	overlayOptions: {
 		blockRatio: 0.4,
-	}
+	},
+	useSVG : "false"
 });
 </script>
 ```

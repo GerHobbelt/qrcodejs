@@ -646,7 +646,8 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 			colorBorder:  "#ff0000",
 			correctLevel: QRErrorCorrectLevel.H,
 			border:       1,
-			margin:       10
+			margin:       10,
+			useSVG: false
 		};
 		
 		if (typeof vOption === 'string') {
@@ -744,8 +745,13 @@ if(typeof document === 'undefined' && typeof navigator === 'undefined'){
 	 */
 	QRCode.prototype.clear = function () {
 		this._oDrawing.clear();
+		this._el.title = "";
+		if (!this._htOption.useSVG) {
+			this._oDrawing._elImage.src = "";
+			this._oDrawing._elImage.style.display = "none";
+		}
 	};
-	
+
 	/**
 	 * @name QRCode.CorrectLevel
 	 */
