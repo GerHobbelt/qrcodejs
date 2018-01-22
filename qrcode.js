@@ -1082,7 +1082,7 @@
                             "x": String(col),
                             "y": String(row)
                         });
-                        child.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#template")
+                        child.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#template");
                         svg.appendChild(child);
                     }
                 }
@@ -1192,13 +1192,14 @@
     function createCanvasDrawer() { // Drawing in Canvas
         function _onMakeImage() {
             this._elImage.src = this._elCanvas.toDataURL("image/png");
-            this._elImage.style.display = "initial";
-            this._elCanvas.style.display = "initial";
+            this._elImage.style.display = null;
+            this._elCanvas.style.display = null;
         }
 
         // Android 2.1 bug workaround
         // http://code.google.com/p/android/issues/detail?id=5141
-        if (_getAndroid() && _getAndroid() <= 2.1) {
+        var _android = _getAndroid();
+        if (_android && _android <= 2.1) {
             var factor = 1 / window.devicePixelRatio;
             var drawImage = CanvasRenderingContext2D.prototype.drawImage;
             CanvasRenderingContext2D.prototype.drawImage = function(image, sx, sy, sw, sh, dx, dy, dw, dh) {
@@ -1303,73 +1304,87 @@
          *
          * @param {QRCode} oQRCode
          */
-        Drawing.prototype.drawOriginal = function(oQRCode, _htOption) {
+        Drawing.prototype.drawOriginal = function(oQRCode, _drawOptions) {
             var _elImage = this._elImage;
             var _oContext = this._oContext;
+            var _htOption = this._htOption;
+            _drawOptions = _drawOptions || {};
             var width = _htOption.width;
             var height = _htOption.height;
-            var margin = _htOption.margin;
+            var border = _htOption.border;
+            var margin = _htOption.margin + border;
+            var drawOnlyDark = _htOption.drawOnlyDark || _drawOptions.drawOnlyDark;
+            var noSmoothing = _htOption.noSmoothing || _drawOptions.noSmoothing;
+            var removeAntiAliasing  = _htOption.removeAntiAliasing || _drawOptions.removeAntiAliasing;
 
             var nCount = oQRCode.getModuleCount();
-            var nWidth = (width - margin * 2) / (nCount + 2 * _htOption.border);
-            var nHeight = (height - margin * 2) / (nCount + 2 * _htOption.border);
-            var nBorderWidth = _htOption.border * nWidth;
-            var nBorderHeight = _htOption.border * nHeight;
-            var nRoundedWidth = Math.round(nWidth);
-            var nRoundedHeight = Math.round(nHeight);
-            var nDrawnWidth = nWidth;
-            var nDrawnHeight = nHeight;
-
-            if (_htOption.blockRatio !== undefined && _htOption.blockRatio < 1) {
-                nDrawnWidth = nWidth * _htOption.blockRatio;
-                nDrawnHeight = nHeight * _htOption.blockRatio;
-                nRoundedWidth = Math.round(nDrawnWidth);
-                nRoundedHeight = Math.round(nDrawnHeight);
-            }
+            var nWidth = width / (nCount + 2 * margin);
+            var nHeight = height / (nCount + 2 * margin);
+            var nBorderWidth = border * nWidth;
+            var nBorderHeight = border * nHeight;
+            var nDrawnWidth = nWidth * _htOption.blockRatio;
+            var nDrawnHeight = nHeight * _htOption.blockRatio;
 
             _elImage.style.display = "none";
 
-            _oContext.fillStyle = _htOption.colorLight;
-            _oContext.fillRect(0, 0, width, height);
+            if (noSmoothing) {
+              _oContext.webkitImageSmoothingEnabled = false;
+              _oContext.mozImageSmoothingEnabled = false;
+              _oContext.imageSmoothingEnabled = false;
+            }
+            
+            if (!drawOnlyDark) {
+	            _oContext.fillStyle = _htOption.colorLight;
+	            _oContext.fillRect(0, 0, width, height);
+	        }
 
             // Fill quiet zone's border with border color
             _oContext.strokeStyle = _htOption.colorBorder;
             _oContext.lineWidth = 1;
             _oContext.fillStyle = _htOption.colorBorder;
-            _oContext.fillRect(0, 0, _htOption.width, nBorderHeight);
-            _oContext.fillRect(0, _htOption.height - nBorderHeight, _htOption.width, _htOption.height);
-            _oContext.fillRect(0, nBorderHeight, nBorderWidth, _htOption.height - nBorderHeight);
-            _oContext.fillRect(_htOption.width - nBorderWidth, nBorderHeight, _htOption.width, _htOption.height - nBorderHeight);
+            _oContext.fillRect(0, 0, width, nBorderHeight);
+            _oContext.fillRect(0, height - nBorderHeight, width, nBorderHeight);
+            _oContext.fillRect(0, nBorderHeight, nBorderWidth, height - 2 * nBorderHeight);
+            _oContext.fillRect(width - nBorderWidth, nBorderHeight, nBorderWidth, height - 2 * nBorderHeight);
+
+            var marginX = margin + ((1 - _htOption.blockRatio) / 2);
+            var marginY = margin + ((1 - _htOption.blockRatio) / 2);
 
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
                     var bIsDark = oQRCode.isDark(row, col);
-                    var nLeft = col * nWidth + margin;
-                    var nTop = row * nHeight + margin;
+                    if (!bIsDark && drawOnlyDark) {
+                        continue;
+                    }
+                    var nLeft = (col + marginX) * nWidth;
+                    var nTop = (row + marginY) * nHeight;
                     _oContext.strokeStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;
                     _oContext.lineWidth = 1;
                     _oContext.fillStyle = bIsDark ? _htOption.colorDark : _htOption.colorLight;
 
-                    if (_htOption.blockRatio !== undefined && _htOption.blockRatio < 1) {
-                        nTop += ((1 - _htOption.blockRatio) / 2) * nHeight;
-                        nLeft += ((1 - _htOption.blockRatio) / 2) * nWidth;
-                    }
-                    _oContext.fillRect(nLeft + nBorderWidth, nTop + nBorderHeight, nRoundedWidth, nRoundedHeight);
-
-                    // 안티 앨리어싱 방지 처리
-                    _oContext.strokeRect(
-                        Math.floor(nLeft + nBorderWidth) + 0.5,
-                        Math.floor(nTop + nBorderHeight) + 0.5,
-                        nRoundedWidth,
-                        nRoundedHeight
-                    );
-
-                    _oContext.strokeRect(
-                        Math.ceil(nLeft + nBorderWidth) - 0.5,
-                        Math.ceil(nTop + nBorderHeight) - 0.5,
-                        nRoundedWidth,
-                        nRoundedHeight);
+                    _oContext.fillRect(nLeft, nTop, nDrawnWidth, nDrawnHeight);
                 }
+            }
+            
+            if (removeAntiAliasing) {
+              // Anti-aliasing removal
+              var imageData = this._oContext.getImageData(margin, margin, width, height);
+              var data = imageData.data;
+              for (var y = 0; y < height; ++y) {
+                  for (var x = 0; x < width; ++x) {
+                      var index = (y * width + x) * 4;
+                      if (data[index] !== 0 && data[index] !== 255) {
+                      	  var color = (data[index] >= 128 ? 255 : 0);
+                          data[index] = color;
+                          data[++index] = color;
+                          data[++index] = color;
+                          data[++index] = 255;
+                      }
+                  }
+              }
+
+              this._oContext.putImageData(imageData, margin, margin);
+              // End Anti-aliasing
             }
         };
 
@@ -1379,59 +1394,21 @@
          * @param {QRCode} oQRCode
          */
         Drawing.prototype.drawBlackOnly = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _oContext = this._oContext;
-            var _htOption = this._htOption;
-
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = _htOption.width / nCount;
-            var nHeight = _htOption.height / nCount;
-            var nCeilWidth = Math.ceil(nWidth);
-            var nCeilHeight = Math.ceil(nHeight);
-
-            _elImage.style.display = "none";
-
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
-            _oContext.lineWidth = 1;
-
-            for (var row = 0; row < nCount; row++) {
-                for (var col = 0; col < nCount; col++) {
-                    var bIsDark = oQRCode.modules[row][col];
-                    if (!bIsDark) {
-                        continue;
-                    }
-
-                    var nLeft = ~~(col * nWidth);
-                    var nTop = ~~(row * nHeight);
-
-                    _oContext.fillRect(nLeft, nTop, nCeilWidth, nCeilHeight);
-                }
-            }
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+            });
         };
 
 
         Drawing.prototype.drawBlackOnlyStrokeFill = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _oContext = this._oContext;
-            var _htOption = this._htOption;
-
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = _htOption.width / nCount;
-            var nHeight = _htOption.height / nCount;
-            var nRoundedWidth = Math.round(nWidth);
-            var nRoundedHeight = Math.round(nHeight);
-
-            // nWidth = nRoundedWidth;
-            // nHeight = nRoundedHeight;
-
-            _elImage.style.display = "none";
-
-            //_oContext.fillStyle = _htOption.colorLight;
-            //_oContext.fillRect(0,0,_htOption.width,_htOption.height);
-
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
+            // TODO
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+              noSmoothing: true,
+            });
+            
+            // but with these modifications in the loop / post-loop:
+            
             _oContext.lineWidth = 1;
             _oContext.beginPath();
 
@@ -1441,92 +1418,40 @@
 
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
-                    var bIsDark = oQRCode.modules[row][col];
+                    var bIsDark = oQRCode.isDark(row, col);
                     if (!bIsDark) {
                         continue;
                     }
 
-                    var nLeft = col * nWidth;
-                    var nTop = row * nHeight;
 
-                    _oContext.rect(nLeft, nTop, nWidth, nHeight);
+
+
                 }
             }
-            _oContext.fill();
+            _oContext.fill();   // ???
         };
 
         Drawing.prototype.drawBlackOnlyAntiAlias = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _oContext = this._oContext;
-            var _htOption = this._htOption;
-
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = _htOption.width / nCount;
-            var nHeight = _htOption.height / nCount;
-            var nRoundedWidth = Math.round(nWidth);
-            var nRoundedHeight = Math.round(nHeight);
-
-            // nWidth = nRoundedWidth;
-            // nHeight = nRoundedHeight;
-
-            _elImage.style.display = "none";
-
-            _oContext.fillStyle = _htOption.colorLight;
-            _oContext.fillRect(0, 0, _htOption.width, _htOption.height);
-
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
-            _oContext.lineWidth = 1;
-
-            _oContext.webkitImageSmoothingEnabled = false;
-            _oContext.mozImageSmoothingEnabled = false;
-            _oContext.imageSmoothingEnabled = false;
-
-            for (var row = 0; row < nCount; row++) {
-                for (var col = 0; col < nCount; col++) {
-                    var bIsDark = oQRCode.modules[row][col];
-                    if (!bIsDark) {
-                        continue;
-                    }
-
-                    var nLeft = col * nWidth;
-                    var nTop = row * nHeight;
-
-                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
-                }
-            }
-
-            // Anti-aliasing removal
-            var imageData = this._oContext.getImageData(0, 0, _htOption.width, _htOption.height);
-            var data = imageData.data;
-            var height = _htOption.height;
-            var width = _htOption.width;
-            for (var y = 0; y < height; ++y) {
-                for (var x = 0; x < width; ++x) {
-                    var index = (y * width + x) * 4;
-                    //data[index + 3] = 255;
-                    if (data[index] !== 0 && data[index] !== 255) {
-                        data[index] = 255;
-                        data[++index] = 255;
-                        data[++index] = 255;
-                        data[++index] = 255;
-                    }
-                }
-            }
-
-            this._oContext.putImageData(imageData, 0, 0);
-            // End Anti-aliasing
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+              noSmoothing: true,
+              removeAntiAliasing: true,
+            });
         };
 
 
         // offscreen
         Drawing.prototype.drawOffscreen = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _htOption = this._htOption;
+            // TODO
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+              noSmoothing: true,
+            });
 
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = Math.floor(_htOption.width / nCount);
-            var nHeight = Math.floor(_htOption.height / nCount);
+            return;
+                        
+            // but with these modifications in the loop / post-loop:
+            
             var modules = oQRCode.modules;
 
             var can2 = document.createElement('canvas');
@@ -1535,32 +1460,27 @@
 
             var _oContext = can2.getContext('2d');
 
-            _elImage.style.display = "none";
-
             _oContext.fillStyle = _htOption.colorLight;
             _oContext.fillRect(0, 0, can2.width, can2.height);
 
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
-            _oContext.lineWidth = 1;
 
             _oContext.webkitImageSmoothingEnabled = false;
             _oContext.mozImageSmoothingEnabled = false;
             _oContext.imageSmoothingEnabled = false;
 
-            //_oContext.beginPath();
+
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
-                    var bIsDark = modules[row][col];
+                    var bIsDark = oQRCode.isDark(row, col);
                     if (!bIsDark) {
                         continue;
                     }
 
-                    var nLeft = col * nWidth;
-                    var nTop = row * nHeight;
 
-                    //_oContext.rect(nLeft,nTop,nWidth,nHeight);
-                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
+
+
+
+
                 }
             }
 
@@ -1570,12 +1490,14 @@
 
         // offscreen
         Drawing.prototype.drawOffscreenStrokeFill = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _htOption = this._htOption;
-
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = Math.floor(_htOption.width / nCount);
-            var nHeight = Math.floor(_htOption.height / nCount);
+            // TODO
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+              noSmoothing: true,
+            });
+            
+            // but with these modifications in the loop / post-loop:
+            
             var modules = oQRCode.modules;
 
             var can2 = document.createElement('canvas');
@@ -1584,14 +1506,9 @@
 
             var _oContext = can2.getContext('2d');
 
-            _elImage.style.display = "none";
-
             _oContext.fillStyle = _htOption.colorLight;
             _oContext.fillRect(0, 0, can2.width, can2.height);
 
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
-            _oContext.lineWidth = 1;
 
             _oContext.webkitImageSmoothingEnabled = false;
             _oContext.mozImageSmoothingEnabled = false;
@@ -1600,16 +1517,16 @@
             _oContext.beginPath();
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
-                    var bIsDark = modules[row][col];
+                    var bIsDark = oQRCode.isDark(row, col);
                     if (!bIsDark) {
                         continue;
                     }
 
-                    var nLeft = col * nWidth;
-                    var nTop = row * nHeight;
 
-                    _oContext.rect(nLeft, nTop, nWidth, nHeight);
-                    //_oContext.fillRect(nLeft,nTop,nWidth,nHeight);
+
+
+
+
                 }
             }
 
@@ -1619,12 +1536,15 @@
 
         // offscreen simple anti-alias
         Drawing.prototype.drawOffscreenAntiAlias = function(oQRCode) {
-            var _elImage = this._elImage;
-            var _htOption = this._htOption;
-
-            var nCount = oQRCode.getModuleCount();
-            var nWidth = Math.floor(_htOption.width / nCount);
-            var nHeight = Math.floor(_htOption.height / nCount);
+            // TODO
+            this.drawOriginal(oQRCode, {
+              drawOnlyDark: true,
+              noSmoothing: true,
+              removeAntiAliasing: true,
+            });
+            
+            // but with these modifications in the loop / post-loop:
+            
 
             var can2 = document.createElement('canvas');
             can2.width = nWidth * nCount;
@@ -1632,14 +1552,9 @@
 
             var _oContext = can2.getContext('2d');
 
-            _elImage.style.display = "none";
-
             _oContext.fillStyle = _htOption.colorLight;
             _oContext.fillRect(0, 0, can2.width, can2.height);
 
-            _oContext.strokeStyle = _htOption.colorDark;
-            _oContext.fillStyle = _htOption.colorDark;
-            _oContext.lineWidth = 1;
 
             _oContext.webkitImageSmoothingEnabled = false;
             _oContext.mozImageSmoothingEnabled = false;
@@ -1648,16 +1563,16 @@
             //_oContext.beginPath();
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
-                    var bIsDark = oQRCode.modules[row][col];
+                    var bIsDark = oQRCode.isDark(row, col);
                     if (!bIsDark) {
                         continue;
                     }
 
-                    var nLeft = col * nWidth;
-                    var nTop = row * nHeight;
 
-                    //_oContext.rect(nLeft,nTop,nWidth,nHeight);
-                    _oContext.fillRect(nLeft, nTop, nWidth, nHeight);
+
+
+
+
                 }
             }
 
@@ -1779,18 +1694,20 @@
             var nLimit = 0;
 
             switch (nCorrectLevel) {
-                case QRErrorCorrectLevel.L:
-                    nLimit = QRCodeLimitLength[i][0];
-                    break;
-                case QRErrorCorrectLevel.M:
-                    nLimit = QRCodeLimitLength[i][1];
-                    break;
-                case QRErrorCorrectLevel.Q:
-                    nLimit = QRCodeLimitLength[i][2];
-                    break;
-                case QRErrorCorrectLevel.H:
-                    nLimit = QRCodeLimitLength[i][3];
-                    break;
+            case QRErrorCorrectLevel.L:
+                nLimit = QRCodeLimitLength[i][0];
+                break;
+            case QRErrorCorrectLevel.M:
+                nLimit = QRCodeLimitLength[i][1];
+                break;
+            case QRErrorCorrectLevel.Q:
+                nLimit = QRCodeLimitLength[i][2];
+                break;
+            case QRErrorCorrectLevel.H:
+                nLimit = QRCodeLimitLength[i][3];
+                break;
+            default:
+	            throw new Error("invalid nCorrectLevel setting");
             }
 
             if (length <= nLimit) {
@@ -1843,6 +1760,7 @@
             width: 256,
             height: 256,
             typeNumber: 4,
+            blockratio: 1,
             colorDark: "#000000",
             colorLight: "#ffffff",
             colorBorder: "#ff0000",
@@ -1850,7 +1768,8 @@
             border: 1,
             margin: 10,
             class: "qrcode-img",
-            useSVG: false
+            useSVG: false,
+            draw: "drawOriginal"   // "drawOffscreen"
         };
 
         if (typeof vOption === 'string') {
@@ -1862,10 +1781,16 @@
         // Overwrites options
         if (vOption) {
             for (var i in vOption) {
-                if (Object.prototype.hasOwnProperty.call(vOption, vOption[i])) {
+                if (Object.prototype.hasOwnProperty.call(vOption, i)) {
                     this._htOption[i] = vOption[i];
                 }
             }
+        }
+
+        // correct/check important options:
+        this._htOption.blockRatio *= 1; 	// force option value to Number type
+        if (!isFinite(this._htOption.blockRatio) || this._htOption.blockRatio <= 0.1 || this._htOption.blockRatio >= 1) {
+        	this._htOption.blockRatio = 1;
         }
 
         if (typeof el === "string") {
@@ -1938,7 +1863,7 @@
      * @private
      */
     QRCode.prototype.makeImage = function() {
-        if (typeof this._oDrawing.makeImage === "function" && (!_getAndroid() || _getAndroid() >= 3)) {
+        if (typeof this._oDrawing.makeImage === "function" && (!this._android || this._android >= 3)) {
             this._oDrawing.makeImage();
         }
     };
