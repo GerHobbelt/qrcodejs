@@ -12,10 +12,13 @@
     padding: 0;
     background: #000;
   }
+  fieldset {
+    margin-bottom: 30px;
+  }
   .text {
     font-size: 20px;
     color: #fff;
-    margin-bottom: 30px;
+    margin-bottom: 3px;
     font-family: monospace;
   }
   .text input {
@@ -23,6 +26,9 @@
     text-align: center;
     width: 80%;
     font-family: monospace;
+  }
+  .text input[type="checkbox"] {
+    width: initial;
   }
   .text select {
     font-size: 20px;
@@ -34,6 +40,7 @@
     display: block;
     padding: 30px;
     text-align: center;
+    background-color: #575757;
   }
   #qrcode {
     /* display: inline-block; */
@@ -49,38 +56,51 @@
 </head>
 <body>
   <div id="qrcode-container">
-    <div class="text">
-      Text:
-      <input id="text" type="text" value="https://youyanchu.com">
-    </div>
-    <div class="text">
-      Size:
-      <input id="size" type="number" value="160" style="width: 4em;">
-      Margin:
-      <input id="margin" type="number" value="2" style="width: 3em;">
-      Border:
-      <input id="border" type="number" value="1" style="width: 3em;">
-      Dark:
-      <input id="dark" type="text" value="#000000" style="width: 6em;" maxlength="7">
-      Light:
-      <input id="light" type="text" value="#ffffff" style="width: 6em;" maxlength="7">
-      Border:
-      <input id="bordercolor" type="text" value="#ff0000" style="width: 6em;" maxlength="7">
-    </div>
-    <div class="text">
-      Correction:
-      <select id="correction">
-        <option value="L">L (7%)</option>
-        <option value="M">M (15%)</option>
-        <option value="Q">Q (25%)</option>
-        <option value="H" selected>H (30%)</option>
-      </select>
-    </div>
+    <fieldset>
+      <div class="text">
+        <label for="">Text:</label>
+        <input id="text" type="text" value="https://youyanchu.com">
+      </div>
+      <div class="text">
+        <label for="size">Size:</label>
+        <input id="size" type="number" value="160" style="width: 4em;">
+        <label for="margin">Margin:</label>
+        <input id="margin" type="number" value="2" style="width: 3em;">
+        <label for="border">Border:</label>
+        <input id="border" type="number" value="1" style="width: 3em;">
+        <label for="dark">Dark:</label>
+        <input id="dark" type="text" value="#000000" style="width: 6em;" maxlength="7">
+        <label for="light">Light:</label>
+        <input id="light" type="text" value="#ffffff" style="width: 6em;" maxlength="7">
+        <label for="bordercolor">Border:</label>
+        <input id="bordercolor" type="text" value="#ff0000" style="width: 6em;" maxlength="7">
+        <label for="useSVG">Use SVG:</label>
+        <input type="checkbox" name="useSVG" id="useSVG">
+        <label for="useTABLE">Use TABLE:</label>
+        <input type="checkbox" name="useTABLE" id="useTABLE">
+        <label for="drawOnlyDark">Draw Only Dark Pixels:</label>
+        <input type="checkbox" name="drawOnlyDark" id="drawOnlyDark">
+        <label for="noSmoothing">No Smoothing:</label>
+        <input type="checkbox" name="noSmoothing" id="noSmoothing">
+        <label for="removeAntiAliasing">Remove AntiAliasing:</label>
+        <input type="checkbox" name="removeAntiAliasing" id="removeAntiAliasing">
+      </div>
+      <div class="text">
+        <label for="correction">Correction:</label>
+        <select id="correction">
+          <option value="L">L (7%)</option>
+          <option value="M">M (15%)</option>
+          <option value="Q">Q (25%)</option>
+          <option value="H" selected>H (30%)</option>
+        </select>
+      </div>
+    </fieldset>
     <div id="qrcode"></div>
+    <div id="qrcode-as-image"></div>
   </div>
 
   <script type="text/javascript">
-    $('#size, #margin, #border, #dark, #light, #bordercolor, #correction').on('keyup change', function (e) {
+    $('#size, #margin, #border, #dark, #light, #bordercolor, #correction, #useSVG, #useTABLE, #drawOnlyDark, #noSmoothing, #removeAntiAliasing').on('keyup change', function (e) {
       var size = $('#size').val();
       var margin = $('#margin').val();
       var border = $('#border').val();
@@ -88,7 +108,13 @@
       var light = $('#light').val();
       var bordercolor = $('#bordercolor').val();
       var correction = $('#correction').val();
+      var useSVG = $('#useSVG').is(':checked');
+      var useTABLE = $('#useTABLE').is(':checked');
+      var drawOnlyDark = $('#drawOnlyDark').is(':checked');
+      var noSmoothing = $('#noSmoothing').is(':checked');
+      var removeAntiAliasing = $('#removeAntiAliasing').is(':checked');
       $('#qrcode').empty();
+      $('#qrcode-as-image').empty();
       var qrcode = new QRCode($('#qrcode')[0], {
         width:  parseInt(size) || 160,
         height: parseInt(size) || 160,
@@ -97,7 +123,13 @@
         colorDark: dark || '#000',
         colorLight: light || '#fff',
         colorBorder: bordercolor || '#f00',
-        correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M
+        correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M,
+        useSVG: !!useSVG,
+        useTABLE: !!useTABLE,
+        drawOnlyDark: !!drawOnlyDark,
+        noSmoothing: !!noSmoothing,
+        removeAntiAliasing: !!removeAntiAliasing,
+        targetImage: $('#qrcode-as-image')
       });
       $("#text").off('keyup').on('keyup', function (e) {
         console.log('Render new QRcode', {
@@ -109,12 +141,20 @@
           colorDark: dark || '#000',
           colorLight: light || '#fff',
           colorBorder: bordercolor || '#f00',
-          correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M
+          correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M,
+          useSVG: !!useSVG,
+          useTABLE: !!useTABLE,
+          drawOnlyDark: !!drawOnlyDark,
+          noSmoothing: !!noSmoothing,
+          removeAntiAliasing: !!removeAntiAliasing,
+          targetImage: $('#qrcode-as-image')
         });
 
         qrcode.makeCode($('#text').val());
       }).trigger('keyup');
-    }).trigger('change');
+    });
+    // trigger only one of the registered events: that's enough to render the QR code at page load time.
+    $('#size').trigger('change');
   </script>
 </body>
 </html>
