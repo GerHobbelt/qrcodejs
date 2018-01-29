@@ -1354,6 +1354,9 @@
             this._elImage.src = this._elCanvas.toDataURL("image/png");
             this._elImage.style.display = null;
             this._elCanvas.style.display = null;
+       			if (typeof this._htOption.success === 'function') {
+                this._htOption.success.call(this);
+            }
         }
 
         // Android 2.1 bug workaround
