@@ -1,6 +1,6 @@
 {
-  "name": "qrcodejs",
-  "version": "1.0.0",
+  "name": "@gerhobbelt/qrcodejs",
+  "version": "1.0.1-1",
   "description": "QRCode.js is javascript library for making QRCode. QRCode.js supports Cross-browser with HTML5 Canvas and table tag in DOM. QRCode.js has no dependencies.",
   "main": "qrcode.js",
   "dependencies": {
@@ -22,8 +22,8 @@
     "nodejs",
     "node-canvas"
   ],
-  "author": [
-    "Sangmin Shim <ssm0123@gmail.com>",
+  "authors": [
+    "Sangmin Shim <ssm0123@gmail.com> (http://jaguarjs.com)",
     "Angela Wang <idu.angela@gmail.com>"
   ],
   "license": "MIT",
