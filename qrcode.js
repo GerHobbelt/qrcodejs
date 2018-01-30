@@ -26,20 +26,20 @@
     // checking if we are not at client side
     if (typeof document === 'undefined' && typeof navigator === 'undefined') {
         var Canvas, Image;
-    	try {
-	        var Canvas = require('canvas');
-	        var Image = Canvas.Image;
-	    } catch (ex) {
-	    	console.warn("QRCode: NodeJS 'canvas' package not loaded/installed. Falling back to TABLE drawing method.")
-	        Canvas = null;
-	        Image = null;
-	    }
+        try {
+            var Canvas = require('canvas');
+            var Image = Canvas.Image;
+        } catch (ex) {
+            console.warn("QRCode: NodeJS 'canvas' package not loaded/installed. Falling back to TABLE drawing method.")
+            Canvas = null;
+            Image = null;
+        }
         var fs = require('fs');
         /**
          * createFakeElementById
-         * 
+         *
          * return an object fake the dom element
-         * 
+         *
          * @id {String}
          * @return {Object}
          */
@@ -1060,10 +1060,10 @@
             var nDrawnWidth = nWidth * _htOption.blockRatio;
             var nDrawnHeight = nHeight * _htOption.blockRatio;
             if (removeAntiAliasing) {
-            	nWidth = Math.floor(nWidth);
-            	nHeight = Math.floor(nHeight);
-            	nDrawnWidth = Math.floor(nDrawnWidth);
-            	nDrawnHeight = Math.floor(nDrawnHeight);
+                nWidth = Math.floor(nWidth);
+                nHeight = Math.floor(nHeight);
+                nDrawnWidth = Math.floor(nDrawnWidth);
+                nDrawnHeight = Math.floor(nDrawnHeight);
             }
             var nBorderWidth = border * nWidth;
             var nBorderHeight = border * nHeight;
@@ -1071,84 +1071,84 @@
             var marginX = (margin + (1 - _htOption.blockRatio) / 2) * nWidth + (width - nWidth * nRenderCount) / 2;
             var marginY = (margin + (1 - _htOption.blockRatio) / 2) * nHeight + (height - nHeight * nRenderCount) / 2;
             if (removeAntiAliasing) {
-            	marginX = Math.floor(marginX);
-            	marginY = Math.floor(marginY);
+                marginX = Math.floor(marginX);
+                marginY = Math.floor(marginY);
             }
-            
+
             this.clear();
 
             function makeSVG(tag, attrs, el) {
-            	if (!el) {
-               		el = _el.ownerDocument.createElementNS('http://www.w3.org/2000/svg', tag);
-               	}
+                if (!el) {
+                    el = _el.ownerDocument.createElementNS('http://www.w3.org/2000/svg', tag);
+                }
 
                 for (var k in attrs) {
                     if (attrs.hasOwnProperty(k)) {
-                    	el.setAttribute(k, attrs[k]);
+                        el.setAttribute(k, attrs[k]);
                     }
                 }
                 return el;
             }
 
             var svg = makeSVG("svg", {
-	                'viewBox': '0 0 ' + width + " " + height,
-	                'width': width + 'px',
-	                'height': height + 'px',
-	                'fill': _htOption.colorLight
-	            }, 
-            	// use the `_el` SVG element, iff it is an SVG element, otherwise
-        		// add a SVG child element to `_el`:
-        		isSvgNode(_el) ? _el : null
+                    'viewBox': '0 0 ' + width + " " + height,
+                    'width': width + 'px',
+                    'height': height + 'px',
+                    'fill': _htOption.colorLight
+                },
+                // use the `_el` SVG element, iff it is an SVG element, otherwise
+                // add a SVG child element to `_el`:
+                isSvgNode(_el) ? _el : null
             );
 
             svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
             if (svg !== _el) {
-            	_el.appendChild(svg);
+                _el.appendChild(svg);
             }
 
             if (!drawOnlyDark) {
-	            svg.appendChild(makeSVG("rect", {
-	                "fill": _htOption.colorLight,
-	                "width": "100%",
-	                "height": "100%"
-	            }));
-	        }
+                svg.appendChild(makeSVG("rect", {
+                    "fill": _htOption.colorLight,
+                    "width": "100%",
+                    "height": "100%"
+                }));
+            }
             // render border as a fill, rather than a stroke
-            // 
+            //
             // See also: https://stackoverflow.com/questions/7241393/can-you-control-how-an-svgs-stroke-width-is-drawn
             if (border) {
-	            svg.appendChild(makeSVG("rect", {
-	                "fill": _htOption.colorBorder,
-	                "x": 0,
-	                "y": 0,
-	                "width": width,
-	                "height": nBorderHeight
-	            }));
-	            svg.appendChild(makeSVG("rect", {
-	                "fill": _htOption.colorBorder,
-	                "x": 0,
-	                "y": height - nBorderHeight,
-	                "width": width,
-	                "height": nBorderHeight
-	            }));
-	            svg.appendChild(makeSVG("rect", {
-	                "fill": _htOption.colorBorder,
-	                "x": 0,
-	                "y": nBorderHeight,
-	                "width": nBorderWidth,
-	                "height": height - 2 * nBorderHeight
-	            }));
-	            svg.appendChild(makeSVG("rect", {
-	                "fill": _htOption.colorBorder,
-	                "x": width - nBorderWidth,
-	                "y": nBorderHeight,
-	                "width": nBorderWidth,
-	                "height": height - 2 * nBorderHeight
-	            }));
-	        }
+                svg.appendChild(makeSVG("rect", {
+                    "fill": _htOption.colorBorder,
+                    "x": 0,
+                    "y": 0,
+                    "width": width,
+                    "height": nBorderHeight
+                }));
+                svg.appendChild(makeSVG("rect", {
+                    "fill": _htOption.colorBorder,
+                    "x": 0,
+                    "y": height - nBorderHeight,
+                    "width": width,
+                    "height": nBorderHeight
+                }));
+                svg.appendChild(makeSVG("rect", {
+                    "fill": _htOption.colorBorder,
+                    "x": 0,
+                    "y": nBorderHeight,
+                    "width": nBorderWidth,
+                    "height": height - 2 * nBorderHeight
+                }));
+                svg.appendChild(makeSVG("rect", {
+                    "fill": _htOption.colorBorder,
+                    "x": width - nBorderWidth,
+                    "y": nBorderHeight,
+                    "width": nBorderWidth,
+                    "height": height - 2 * nBorderHeight
+                }));
+            }
 
-	        // set up template dot; the pixel in the top-left corner of the QRcode is always set/black,
-	        // so we place the template pixel there:
+            // set up template dot; the pixel in the top-left corner of the QRcode is always set/black,
+            // so we place the template pixel there:
             svg.appendChild(makeSVG("rect", {
                 "fill": _htOption.colorDark,
                 "x": marginX,
@@ -1161,8 +1161,8 @@
             for (var row = 0; row < nCount; row++) {
                 for (var col = 0; col < nCount; col++) {
                     if (oQRCode.isDark(row, col)) {
-                    	// place these pixels RELATIVE to the template pixel, hence
-                    	// there's no need to add `margin` t `col` and `row` here.
+                        // place these pixels RELATIVE to the template pixel, hence
+                        // there's no need to add `margin` t `col` and `row` here.
                         var child = makeSVG("use", {
                             "x": col * nWidth,
                             "y": row * nHeight
@@ -1185,7 +1185,7 @@
     }
 
     function isSvgNode(el) {
-	    return el && (el.tagName.toLowerCase() === "svg");
+        return el && (el.tagName.toLowerCase() === "svg");
     }
 
     /**
@@ -1209,126 +1209,126 @@
             var _el = this._el;
             var _htOption = this._htOption;
             var _el = this._el;
-            
+
             // TABLE rendering has a few quirks, at least in Chrome, where, despite
             // precise width/height/collapse specs, the tables turn out to be slightly
             // different in size from what one might expect, including vertical
             // stretching/compression.
-            // 
+            //
             // The way to cope with the horizontal width error is to force the width
             // of the TABLE itself, which will cause Chrome to render some columns
             // slightly compressed or stretched to make the table fit the specified
             // WIDTH exactly.
-            // 
+            //
             // The same approach unfortunately DOES NOT WORK for the vertical size,
             // which, after having tried a few approaches, we leave untouched in this
             // code as there's little we can do about it, while generally the
             // vertical size is not as critical as the horizontal in web pages.
-            // 
-            // We also limit the number of attempts to get it right as we cannot 
+            //
+            // We also limit the number of attempts to get it right as we cannot
             // force Chrome to render a precise table for many sizes; the current
             // code only checks the width, so we EXPECT to execute the code below
             // only once; still, we limit the number of loops to prevent run-away
             // under spurious conditions / other browsers.
             var factor = 1;
             for (var loop = 5; loop > 0; loop--) {
-	            var width = _htOption.width * factor;
-	            var height = _htOption.height * factor;
-	            var border = _htOption.border;
-	            var margin = _htOption.margin + border;
-	            var nCount = oQRCode.getModuleCount();
-	            var nRenderCount = nCount + 2 * margin;
-	            var nWidth = width / nRenderCount;
-	            var nHeight = height / nRenderCount;
-	            var nBorderWidth = border * nWidth;
-	            var nBorderHeight = border * nHeight;
-	            var nDrawnWidth = nWidth * _htOption.blockRatio;
-	            var nDrawnHeight = nHeight * _htOption.blockRatio;
+                var width = _htOption.width * factor;
+                var height = _htOption.height * factor;
+                var border = _htOption.border;
+                var margin = _htOption.margin + border;
+                var nCount = oQRCode.getModuleCount();
+                var nRenderCount = nCount + 2 * margin;
+                var nWidth = width / nRenderCount;
+                var nHeight = height / nRenderCount;
+                var nBorderWidth = border * nWidth;
+                var nBorderHeight = border * nHeight;
+                var nDrawnWidth = nWidth * _htOption.blockRatio;
+                var nDrawnHeight = nHeight * _htOption.blockRatio;
 
-	            var styleDef = {
-	            	border: 0,
-	            	'border-collapse': 'collapse',
-	            	padding: 0,
-	            	margin: 0,
-	            	'-webkit-border-horizontal-spacing': 0,
-	            	'-webkit-border-vertical-spacing': 0
-	            };
-	            var style = [
-	            	'background-color', ':' + _htOption.colorLight + '; ',
-	                'width', ':' + nWidth + 'px; ',
-	            	'height', ':' + nHeight + 'px; '
-				];
-	            for (var attr in styleDef) {
-	            	style.push(attr, ': ' + styleDef[attr] + '; ');
-	            }
-	            var lightStyle = style.join('');
-	            style[1] = ':' + _htOption.colorDark + '; ';
-	            var darkStyle = style.join('');
-	            style[1] = ':' + _htOption.colorBorder + '; ';
-	            var borderStyle = style.join('');
-	            style[1] = ':' + _htOption.colorLight + '; ';
-	            style[3] = ':' + width + 'px; ';
-	            style[5] = ':' + height + 'px; ';
-	            var tableStyle = style.join('');
+                var styleDef = {
+                    border: 0,
+                    'border-collapse': 'collapse',
+                    padding: 0,
+                    margin: 0,
+                    '-webkit-border-horizontal-spacing': 0,
+                    '-webkit-border-vertical-spacing': 0
+                };
+                var style = [
+                    'background-color', ':' + _htOption.colorLight + '; ',
+                    'width', ':' + nWidth + 'px; ',
+                    'height', ':' + nHeight + 'px; '
+                ];
+                for (var attr in styleDef) {
+                    style.push(attr, ': ' + styleDef[attr] + '; ');
+                }
+                var lightStyle = style.join('');
+                style[1] = ':' + _htOption.colorDark + '; ';
+                var darkStyle = style.join('');
+                style[1] = ':' + _htOption.colorBorder + '; ';
+                var borderStyle = style.join('');
+                style[1] = ':' + _htOption.colorLight + '; ';
+                style[3] = ':' + width + 'px; ';
+                style[5] = ':' + height + 'px; ';
+                var tableStyle = style.join('');
 
-	            var aHTML = ['<table style="' + tableStyle + '">'];
+                var aHTML = ['<table style="' + tableStyle + '">'];
 
-	            for (var row = 0; row < margin; row++) {
-	                aHTML.push('<tr style="border-collapse:collapse;">');
+                for (var row = 0; row < margin; row++) {
+                    aHTML.push('<tr style="border-collapse:collapse;">');
 
-	                for (var col = 0; col < nRenderCount; col++) {
-	                    aHTML.push('<td style="' + ((row < border || col < border || col >= nRenderCount - border) ? borderStyle : lightStyle) + ';"></td>');
-	                }
+                    for (var col = 0; col < nRenderCount; col++) {
+                        aHTML.push('<td style="' + ((row < border || col < border || col >= nRenderCount - border) ? borderStyle : lightStyle) + ';"></td>');
+                    }
 
-	                aHTML.push('</tr>');
-	            }
+                    aHTML.push('</tr>');
+                }
 
-	            for (var row = 0; row < nCount; row++) {
-	                aHTML.push('<tr style="border-collapse:collapse;">');
+                for (var row = 0; row < nCount; row++) {
+                    aHTML.push('<tr style="border-collapse:collapse;">');
 
-	                for (var col = 0; col < margin; col++) {
-	                    aHTML.push('<td style="' + (col < border ? borderStyle : lightStyle) + ';"></td>');
-	                }
+                    for (var col = 0; col < margin; col++) {
+                        aHTML.push('<td style="' + (col < border ? borderStyle : lightStyle) + ';"></td>');
+                    }
 
-	                for (var col = 0; col < nCount; col++) {
-	                    aHTML.push('<td style="' + (oQRCode.isDark(row, col) ? darkStyle : lightStyle) + ';"></td>');
-	                }
+                    for (var col = 0; col < nCount; col++) {
+                        aHTML.push('<td style="' + (oQRCode.isDark(row, col) ? darkStyle : lightStyle) + ';"></td>');
+                    }
 
-	                for (var col = 0; col < margin; col++) {
-	                    aHTML.push('<td style="' + (col >= margin - border ? borderStyle : lightStyle) + ';"></td>');
-	                }
+                    for (var col = 0; col < margin; col++) {
+                        aHTML.push('<td style="' + (col >= margin - border ? borderStyle : lightStyle) + ';"></td>');
+                    }
 
-	                aHTML.push('</tr>');
-	            }
+                    aHTML.push('</tr>');
+                }
 
-	            for (var row = 0; row < margin; row++) {
-	                aHTML.push('<tr style="border-collapse:collapse;">');
+                for (var row = 0; row < margin; row++) {
+                    aHTML.push('<tr style="border-collapse:collapse;">');
 
-	                for (var col = 0; col < nRenderCount; col++) {
-	                    aHTML.push('<td style="' + ((row >= margin - border || col < border || col >= nRenderCount - border) ? borderStyle : lightStyle) + ';"></td>');
-	                }
+                    for (var col = 0; col < nRenderCount; col++) {
+                        aHTML.push('<td style="' + ((row >= margin - border || col < border || col >= nRenderCount - border) ? borderStyle : lightStyle) + ';"></td>');
+                    }
 
-	                aHTML.push('</tr>');
-	            }
+                    aHTML.push('</tr>');
+                }
 
-	            aHTML.push('</table>');
-	            _el.innerHTML = aHTML.join('');
+                aHTML.push('</table>');
+                _el.innerHTML = aHTML.join('');
 
-	            // Fix the margin values as real size.
-	            var elTable = _el.childNodes[0];
+                // Fix the margin values as real size.
+                var elTable = _el.childNodes[0];
 
-	        	console.log('QRcode table info: ', {
-	        		factor,
-	        		width,
-	        		height,
-	        		actualWidth: elTable.offsetWidth,
-	        		actualHeight: elTable.offsetHeight,
-	        	});
-	        	if (width === elTable.offsetWidth) {
-	        		break;
-	        	}
-	        	factor *= width / elTable.offsetWidth;
-	        }
+                console.log('QRcode table info: ', {
+                    factor,
+                    width,
+                    height,
+                    actualWidth: elTable.offsetWidth,
+                    actualHeight: elTable.offsetHeight,
+                });
+                if (width === elTable.offsetWidth) {
+                    break;
+                }
+                factor *= width / elTable.offsetWidth;
+            }
 
             if (_htOption.class) {
                 elTable.className = _htOption.class;
@@ -1350,12 +1350,30 @@
      * @returns {Function}
      */
     function createCanvasDrawer() { // Drawing in Canvas
+        var _bSupportDataURI = null;
+
+        // success callback for image render:
         function _onMakeImage() {
             this._elImage.src = this._elCanvas.toDataURL("image/png");
             this._elImage.style.display = null;
             this._elCanvas.style.display = null;
-       			if (typeof this._htOption.success === 'function') {
-                this._htOption.success.call(this);
+            if (this._htOption.success) {
+                this._htOption.success.call(this, this._elImage);
+            }
+        }
+
+        // failure callback for image render:
+        function _onNotMadeImage() {
+            this._elImage.src = '';
+            this._elImage.style.display = 'none';
+            this._elCanvas.style.display = null;
+            // invoke the user error callback, unless there isn't one, in which case
+            // we invoke the success callback with a FALSE parameter.
+            if (this._htOption.error) {
+                this._htOption.error.call(this);
+            }
+            else if (this._htOption.success) {
+                this._htOption.success.call(this, false);
             }
         }
 
@@ -1390,38 +1408,41 @@
          */
         function _safeSetDataURI(fSuccess, fFail) {
             var self = this;
-            self._fFail = fFail;
-            self._fSuccess = fSuccess;
 
             // Check it just once
-            if (self._bSupportDataURI === null) {
-                var el = document.createElement("img");
+            if (_bSupportDataURI == null) {
                 var fOnError = function() {
-                    self._bSupportDataURI = false;
+                    _bSupportDataURI = false;
 
-                    if (self._fFail) {
-                        self._fFail.call(self);
+                    if (fFail) {
+                        fFail.call(self);
                     }
                 };
                 var fOnSuccess = function() {
-                    self._bSupportDataURI = true;
+                    _bSupportDataURI = true;
 
-                    if (self._fSuccess) {
-                        self._fSuccess.call(self);
+                    if (fSuccess) {
+                        fSuccess.call(self);
                     }
                 };
 
-                el.onabort = fOnError;
-                el.onerror = fOnError;
-                el.onload = fOnSuccess;
-                el.src = "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="; // the Image contains 1px data.
-                return;
-            } else if (self._bSupportDataURI === true && self._fSuccess) {
-                self._fSuccess.call(self);
-            } else if (self._bSupportDataURI === false && self._fFail) {
-                self._fFail.call(self);
+                // Android below 3 doesn't support Data-URI spec.
+                if (!this._android || this._android >= 3) {
+                    var el = document.createElement("img");
+                    el.onabort = fOnError;
+                    el.onerror = fOnError;
+                    el.onload = fOnSuccess;
+                    el.src = "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="; // the Image contains 1px data.
+                    return;
+                } else {
+                    fOnError();
+                }
+            } else if (_bSupportDataURI === true && fSuccess) {
+                fSuccess.call(self);
+            } else if (_bSupportDataURI === false && fFail) {
+                fFail.call(self);
             }
-        };
+        }
 
         /**
          * Drawing QRCode by using canvas
@@ -1436,7 +1457,7 @@
             // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
             // turn it into a DOM node:
             if (typeof el.get === "function") {
-            	el = el.get(0);
+                el = el.get(0);
             }
 
             this._htOption = htOption;
@@ -1447,18 +1468,18 @@
             el.appendChild(this._elCanvas);
             this._el = el;
             this._oContext = this._elCanvas.getContext("2d");
-            /* add class and targetImage in htOption, create new img only when no targetImage */
+            // create new img only when no targetImage.
             var targetImage = htOption.targetImage;
             // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
             // turn it into a DOM node:
             if (targetImage && typeof targetImage.get === "function") {
-            	targetImage = targetImage.get(0);
+                targetImage = targetImage.get(0);
             }
             var imgParent = this._el;
             // when referenced DOM node is not an <IMG>, we place a new <IMG> as a child:
             if (targetImage.tagName.toLowerCase() !== "img") {
-	            imgParent = targetImage;
-	            targetImage = null;
+                imgParent = targetImage;
+                targetImage = null;
             }
             this._elImage = targetImage || el.ownerDocument.createElement("img");
 
@@ -1470,7 +1491,12 @@
                 this._elImage.style.display = "none";
                 imgParent.appendChild(this._elImage);
             }
-            this._bSupportDataURI = null;
+            // disable image when we already know the environment does not support image data URIs:
+            _safeSetDataURI.call(this);
+            if (_bSupportDataURI === false) {
+                this._elImage.src = "";
+                this._elImage.style.display = "none";
+            }
         };
 
         /**
@@ -1479,7 +1505,6 @@
          * @param {QRCode} oQRCode
          */
         Drawing.prototype.draw = function(oQRCode) {
-            var _elImage = this._elImage;
             var _oContext = this._oContext;
             var _htOption = this._htOption;
             var width = _htOption.width;
@@ -1497,26 +1522,26 @@
             var nDrawnWidth = nWidth * _htOption.blockRatio;
             var nDrawnHeight = nHeight * _htOption.blockRatio;
             if (removeAntiAliasing) {
-            	nWidth = Math.floor(nWidth);
-            	nHeight = Math.floor(nHeight);
-            	nDrawnWidth = Math.floor(nDrawnWidth);
-            	nDrawnHeight = Math.floor(nDrawnHeight);
+                nWidth = Math.floor(nWidth);
+                nHeight = Math.floor(nHeight);
+                nDrawnWidth = Math.floor(nDrawnWidth);
+                nDrawnHeight = Math.floor(nDrawnHeight);
             }
             var nBorderWidth = border * nWidth;
             var nBorderHeight = border * nHeight;
 
-            _elImage.style.display = "none";
+            this._elImage.style.display = "none";
 
             if (noSmoothing) {
               _oContext.webkitImageSmoothingEnabled = false;
               _oContext.mozImageSmoothingEnabled = false;
               _oContext.imageSmoothingEnabled = false;
             }
-            
+
             if (!drawOnlyDark) {
-	            _oContext.fillStyle = _htOption.colorLight;
-	            _oContext.fillRect(0, 0, width, height);
-	        }
+                _oContext.fillStyle = _htOption.colorLight;
+                _oContext.fillRect(0, 0, width, height);
+            }
 
             // Fill quiet zone's border with border color
             _oContext.strokeStyle = _htOption.colorBorder;
@@ -1530,8 +1555,8 @@
             var marginX = (margin + (1 - _htOption.blockRatio) / 2) * nWidth + (width - nWidth * nRenderCount) / 2;
             var marginY = (margin + (1 - _htOption.blockRatio) / 2) * nHeight + (height - nHeight * nRenderCount) / 2;
             if (removeAntiAliasing) {
-            	marginX = Math.floor(marginX);
-            	marginY = Math.floor(marginY);
+                marginX = Math.floor(marginX);
+                marginY = Math.floor(marginY);
             }
 
             for (var row = 0; row < nCount; row++) {
@@ -1549,7 +1574,7 @@
                     _oContext.fillRect(nLeft, nTop, nDrawnWidth, nDrawnHeight);
                 }
             }
-            
+
             if (removeAntiAliasing) {
               // Anti-aliasing removal
               var imageData = this._oContext.getImageData(margin, margin, width, height);
@@ -1558,7 +1583,7 @@
                   for (var x = 0; x < width; ++x) {
                       var index = (y * width + x) * 4;
                       if (data[index] !== 0 && data[index] !== 255) {
-                      	  var color = (data[index] >= 128 ? 255 : 0);
+                          var color = (data[index] >= 128 ? 255 : 0);
                           data[index] = color;
                           data[++index] = color;
                           data[++index] = color;
@@ -1576,7 +1601,7 @@
          * Make the image from Canvas if the browser supports Data URI.
          */
         Drawing.prototype.makeImage = function() {
-            _safeSetDataURI.call(this, _onMakeImage);
+            _safeSetDataURI.call(this, _onMakeImage, _onNotMadeImage);
         };
 
         /**
@@ -1587,6 +1612,34 @@
 
             this._elImage.src = "";
             this._elImage.style.display = "none";
+        };
+
+        /**
+         * Check if environment supports image data URIs.
+         *
+         * WARNING: the first call to this API may invoke async code. Then the answer
+         * will be returned through the callback: a `true` or `false` value of the
+         * first callback function parameter will tell the caller whether there is
+         * (or is NOT) image data URI support in the present environment.
+         *
+         * When the async test code is invoked, the direct return value is NULL,
+         * while otherwise the direct return value is TRUE or FALSE.
+         * 
+         * @return {Boolean} TRUE or FALSE when the async detection logic has 
+         * already produced a verdict. Otherwise NULL.
+         */
+        Drawing.prototype.hasImageSupport = function (callback) {
+            var self = this;
+
+            if (_bSupportDataURI == null) {
+                var cb = function () {
+                    if (callback) {
+                        callback.call(self, false);
+                    }
+                };
+                _safeSetDataURI.call(this, cb, cb);
+            }
+            return _bSupportDataURI;
         };
 
         return Drawing;
@@ -1625,7 +1678,7 @@
                 nLimit = QRCodeLimitLength[i][3];
                 break;
             default:
-	            throw new Error("invalid nCorrectLevel setting");
+                throw new Error("invalid nCorrectLevel setting");
             }
 
             if (length <= nLimit) {
@@ -1671,7 +1724,7 @@
      * @param {Number} [vOption.border=4] default to 1 module
      * @param {String} [vOption.colorDark="#000000"]
      * @param {String} [vOption.colorLight="#ffffff"]
-     * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H] 
+     * @param {QRCode.CorrectLevel} [vOption.correctLevel=QRCode.CorrectLevel.H] [L|M|Q|H]
      */
     var QRCode = function(el, vOption) {
         this._htOption = {
@@ -1688,7 +1741,11 @@
             class: "qrcode-img",
             useSVG: false,
             useTABLE: false,
-            draw: "drawOriginal"   // "drawOffscreen"
+            cover: null,
+            text: null,
+            title: null,
+            success: null,      // function (DOM_image_element OR false)
+            error: null,        // function ()
         };
 
         if (typeof vOption === 'string') {
@@ -1707,9 +1764,9 @@
         }
 
         // correct/check important options:
-        this._htOption.blockRatio *= 1; 	// force option value to Number type
+        this._htOption.blockRatio *= 1;     // force option value to Number type
         if (!isFinite(this._htOption.blockRatio) || this._htOption.blockRatio <= 0.1 || this._htOption.blockRatio >= 1) {
-        	this._htOption.blockRatio = 1;
+            this._htOption.blockRatio = 1;
         }
 
         if (typeof el === "string") {
@@ -1720,9 +1777,9 @@
         if (this._htOption.useSVG || isSvgNode(el)) {
             Drawing = svgDrawer;
         } else if (!this._htOption.useTABLE && _isSupportCanvas()) {
-        	Drawing = canvasDrawer;
+            Drawing = canvasDrawer;
         } else {
-        	Drawing = tableDrawer;
+            Drawing = tableDrawer;
         }
 
         this._android = _getAndroid();
@@ -1745,36 +1802,36 @@
         if (!sText) {
             throw new Error('makeCode() takes in a text parameter');
         }
+        var self = this;
         this._oDrawing.clear();
         this._oQRCode = new QRCodeModel(_getTypeNumber(sText, this._htOption.correctLevel), this._htOption.correctLevel);
         this._oQRCode.addData(sText);
         this._oQRCode.make();
         this._el.title = (title !== undefined) ? title : sText;
 
-        if (this._htOption.cover != null) {
+        if (this._htOption.cover) {
             var _htOption = this._htOption;
-            var drawOptions = JSON.parse(JSON.stringify(_htOption));
-            var overlayDrawOptions = JSON.parse(JSON.stringify(_htOption));
+            // var overlayDrawOptions = JSON.parse(JSON.stringify(_htOption));
 
-            if (_htOption.overlayOptions) {
-                for (var key in _htOption.overlayOptions) {
-                    if (key !== 'text') {
-                        overlayDrawOptions[key] = _htOption.overlayOptions[key];
-                    }
-                }
-            }
+            // if (_htOption.overlayOptions) {
+            //     for (var key in _htOption.overlayOptions) {
+            //         if (key !== 'text') {
+            //             overlayDrawOptions[key] = _htOption.overlayOptions[key];
+            //         }
+            //     }
+            // }
 
-            this._oDrawing.draw(this._oQRCode, drawOptions);
+            this._oDrawing.draw(this._oQRCode);
 
             var coverImage = new Image();
             coverImage.src = _htOption.cover;
             coverImage.onload = function() {
-                this._oDrawing._oContext.drawImage(coverImage, 0, 0, _htOption.width, _htOption.height);
-                this._oDrawing.draw(this._oQRCode, overlayDrawOptions);
-                this.makeImage();
-            }.bind(this);
+                self._oDrawing._oContext.drawImage(coverImage, 0, 0, _htOption.width, _htOption.height);
+                self._oDrawing.draw(self._oQRCode);
+                self.makeImage();
+            };
         } else {
-            this._oDrawing.draw(this._oQRCode, this._htOption);
+            this._oDrawing.draw(this._oQRCode);
             this.makeImage();
         }
     };
@@ -1782,13 +1839,21 @@
     /**
      * Make the Image from Canvas element
      * - It occurs automatically
-     * - Android below 3 doesn't support Data-URI spec.
      *
      * @private
      */
     QRCode.prototype.makeImage = function() {
-        if (typeof this._oDrawing.makeImage === "function" && (!this._android || this._android >= 3)) {
+        if (typeof this._oDrawing.makeImage === "function") {
             this._oDrawing.makeImage();
+        } else {
+            // invoke the user error callback, unless there isn't one, in which case
+            // we invoke the success callback with a FALSE parameter.
+            if (this._htOption.error) {
+                this._htOption.error.call(this);
+            }
+            else if (this._htOption.success) {
+                this._htOption.success.call(this, false);
+            }
         }
     };
 
@@ -1800,6 +1865,27 @@
         this._el.title = "";
     };
 
+    /**
+     * Check if environment supports image data URIs.
+     *
+     * WARNING: the first call to this API may invoke async code. Then the answer
+     * will be returned through the callback: a `true` or `false` value of the
+     * first callback function parameter will tell the caller whether there is
+     * (or is NOT) image data URI support in the present environment.
+     *
+     * When the async test code is invoked, the direct return value is NULL,
+     * while otherwise the direct return value is TRUE or FALSE.
+     * 
+     * @return {Boolean} TRUE or FALSE when the async detection logic has 
+     * already produced a verdict. Otherwise NULL.
+     */
+    QRCode.prototype.hasImageSupport = function (callback) {
+        if (this._oDrawing.hasImageSupport) {
+            return this._oDrawing.hasImageSupport(callback);
+        }
+        return false;
+    };
+    
     /**
      * @name QRCode.CorrectLevel
      */
@@ -1814,4 +1900,4 @@
 
     return QRCode;
 
-}));	
+}));
