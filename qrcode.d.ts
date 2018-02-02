@@ -2,7 +2,7 @@ declare module '@gerhobbelt/qrcodejs' {
     export class QRCode {
 		constructor(el: HTMLElement, optionsOrText: string | QRCodeConfig);
 
-	    static CorrectLevel: CorrectLevel;
+	    static CorrectLevel: QRErrorCorrectLevel;
 
 		clear(): void;
 		makeCode(text: string, title?: string): void;
@@ -12,11 +12,8 @@ declare module '@gerhobbelt/qrcodejs' {
     	write(path): void;
 	}
 
-    interface QRErrorCorrectLevel {
-        L: 1;
-        M: 0;
-        Q: 3;
-        H: 2;
+    export enum QRErrorCorrectLevel {
+        M, L, H, Q
     }
 
     interface QRCodeConfig {
