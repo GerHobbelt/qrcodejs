@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Cross-Browser QRCode Generator</title>
+<title>Cross-Browser QRCode generator for Javascript</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <script type="text/javascript" src="vendor/jquery.min.js"></script>
@@ -100,6 +100,24 @@
   </div>
 
   <script type="text/javascript">
+
+	function getQueryString(name) {
+	     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if (r != null) {
+		 	return unescape(r[2]); 
+		 }
+		 return null;
+	}
+
+	var content = getQueryString("content");
+
+	if (content != null || content !== '') { 
+		var txtEl = $('#text').get(0);
+		txtEl.value = content;
+		txtEl.style.display = "none";
+	} 
+
     $('#size, #margin, #border, #dark, #light, #bordercolor, #correction, #useSVG, #useTABLE, #drawOnlyDark, #noSmoothing, #removeAntiAliasing').on('keyup change', function (e) {
       var size = $('#size').val();
       var margin = $('#margin').val();

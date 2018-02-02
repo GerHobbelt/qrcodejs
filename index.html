@@ -1,96 +1,59 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="qrcode.js : Cross-browser QRCode generator for javascript">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<title>Cross-Browser QRCode generator for Javascript</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="qrcode.js"></script>
+</head>
+<body style="text-align:center;">
+<input id="text" type="text" value="http://ihongqiqu.com/" style="width:80%" /><br />
+<div id="qrcode" style="width:300px; height:300px; margin-top:15px;" align="center"></div>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>qrcode.js</title>
-  </head>
-
-  <body>
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/GerHobbelt/qrcodejs">View on GitHub</a>
-
-          <h1 id="project_title">qrcode.js</h1>
-          <h2 id="project_tagline">Cross-browser QRCode generator for javascript</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/GerHobbelt/qrcodejs/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/GerHobbelt/qrcodejs/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a id="qrcodejs" class="anchor" href="#qrcodejs" aria-hidden="true"><span class="octicon octicon-link"></span></a>QRCode.js</h1>
-
-<p>QRCode.js is javascript library for making QRCode. QRCode.js supports Cross-browser with HTML5 Canvas and table tag in DOM.
-QRCode.js has no dependencies.</p>
-
-<h2>
-<a id="basic-usages" class="anchor" href="#basic-usages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basic Usages</h2>
-
-<pre><code>&lt;div id="qrcode"&gt;&lt;/div&gt;
-&lt;script type="text/javascript"&gt;
-new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
-&lt;/script&gt;
-</code></pre>
-
-<p>or with some options</p>
-
-<pre><code>var qrcode = new QRCode("test", {
-    text: "http://jindo.dev.naver.com/collie",
-    width: 128,
-    height: 128,
-    colorDark : "#000000",
-    colorLight : "#ffffff",
-    correctLevel : QRCode.CorrectLevel.H
+<script type="text/javascript">
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 300,
+	height : 300
 });
-</code></pre>
 
-<p>and you can use some methods</p>
+function makeCode () {		
+	var elText = document.getElementById("text");
+	
+	if (!elText.value) {
+		alert("Input a text");
+		elText.focus();
+		return;
+	}
+	
+	qrcode.makeCode(elText.value);
+}
 
-<pre><code>qrcode.clear(); // clear the code.
-qrcode.makeCode("http://naver.com"); // make another code.
-</code></pre>
+function getQueryString(name) {
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
 
-<h2>
-<a id="sample-code" class="anchor" href="#sample-code" aria-hidden="true">Sample Code</h2>
+var content = getQueryString("content");
 
-<pre class="codepen" data-height="350" data-type="result" data-href="NdBYrg" data-user="davidshimjs" data-safe="true"><code></code></pre>
-<script async src="https://codepen.io/assets/embed/ei.js"></script>
+if (content !== null || content !== undefined || content !== '') { 
+	document.getElementById("text").value = content;
+	document.getElementById("text").style.display="none";
+} 
 
-<h2>
-<a id="browser-compatibility" class="anchor" href="#browser-compatibility" aria-hidden="true">Browser Compatibility</a></h2>
+makeCode();
 
-<p>IE6~10, Chrome, Firefox, Safari, Opera, Mobile Safari, Android, Windows Mobile, ETC.</p>
+$("#text").
+	on("blur", function () {
+		makeCode();
+	}).
+	on("keydown", function (e) {
+		if (e.keyCode == 13) {
+			makeCode();
+		}
+	});
+</script>
 
-<h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
-
-<p>MIT License</p>
-
-<h2>
-<a id="contact" class="anchor" href="#contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contact</h2>
-
-<p>twitter <a href="https://github.com/davidshimjs" class="user-mention">@davidshimjs</a></p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">qrcode.js maintained by <a href="https://github.com/Pol7">Pol7</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-  </body>
-</html>
+<script src="http://s95.cnzz.com/z_stat.php?id=1260545070&web_id=1260545070" language="JavaScript"></script>
+</body>
