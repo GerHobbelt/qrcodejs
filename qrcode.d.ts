@@ -35,6 +35,10 @@ declare module '@gerhobbelt/qrcodejs' {
         class?: string,
         useSVG?: boolean,
         useTABLE?: boolean,
+        drawOnlyDark?: boolean,
+        noSmoothing?: boolean,
+        removeAntiAliasing?: boolean,
+        targetImage?: HTMLElement | null,
         cover?: null,
         success?: null | function,      // function (DOM_image_element OR false)
         error?: null | function,        // function ()
