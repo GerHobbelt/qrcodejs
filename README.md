@@ -23,6 +23,11 @@ In this version, I have added the following features:
 - Needs IE 9+.
 
 
+## Demo
+
+https://davidshimjs.github.io/qrcodejs/
+
+
 ## Basic Usage
 
 One way to use QRCode.js is by declaring a div into which the data will be generated.
