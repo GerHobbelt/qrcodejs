@@ -1892,9 +1892,11 @@
     QRCode.CorrectLevel = QRErrorCorrectLevel;
 
     // add write method to store qrcode on disk.
-    if (typeof fs !== 'undefined') {
-        QRCode.prototype.write = function(path) {
+    QRCode.prototype.write = function(path) {
+        if (typeof fs !== 'undefined') {
             fs.writeFile(path, this._oDrawing._elCanvas.toBuffer());
+        } else {
+            throw new Error('QRCode:write() API not available on this platform: no FS module / filesystem access lib available');
         }
     }
 

@@ -1,22 +1,43 @@
-declare class QRCode {
-	static CorrectLevel: {
-		L: 1;
-		M: 0;
-		Q: 3;
-		H: 2;
+declare module '@gerhobbelt/qrcodejs' {
+    export class QRCode {
+		constructor(el: HTMLElement, optionsOrText: string | QRCodeConfig);
+
+	    static CorrectLevel: CorrectLevel;
+
+		clear(): void;
+		makeCode(text: string, title?: string): void;
+		makeImage(): void;
+	    hasImageSupport(callback: function): boolean;
+
+    	write(path): void;
 	}
 
-	constructor(el: HTMLElement, optionsOrText: string | {
+    interface QRErrorCorrectLevel {
+        L: 1;
+        M: 0;
+        Q: 3;
+        H: 2;
+    }
+
+    interface QRCodeConfig {
+        text?: string;
+        title?: string | null | false,
 		width?: number;
 		height?: number;
-		text?: string;
 		colorDark?: string;
 		colorLight?: string;
-		correctLevel?: 0|1|2|3;
-	});
-
-	clear(): void;
-	makeCode(text: string): void;
-	makeImage(): void;
+        colorBorder?: string,
+		correctLevel?: QRErrorCorrectLevel;
+        typeNumber?: number,
+        blockratio?: number,
+        border?: number,
+        margin?: number,
+        class?: string,
+        useSVG?: boolean,
+        useTABLE?: boolean,
+        cover?: null,
+        success?: null | function,      // function (DOM_image_element OR false)
+        error?: null | function,        // function ()
+	}
 }
 
