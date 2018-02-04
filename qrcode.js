@@ -1454,12 +1454,6 @@
         var Drawing = function(el, htOption) {
             this._android = _getAndroid();
 
-            // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
-            // turn it into a DOM node:
-            if (typeof el.get === "function") {
-                el = el.get(0);
-            }
-
             this._htOption = htOption;
             this._elCanvas = el.ownerDocument.createElement("canvas");
             this._elCanvas.width = htOption.width;
@@ -1470,11 +1464,6 @@
             this._oContext = this._elCanvas.getContext("2d");
             // create new img only when no targetImage.
             var targetImage = htOption.targetImage;
-            // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
-            // turn it into a DOM node:
-            if (targetImage && typeof targetImage.get === "function") {
-                targetImage = targetImage.get(0);
-            }
             var imgParent = this._el;
             // when referenced DOM node is not an <IMG>, we place a new <IMG> as a child:
             if (targetImage.tagName.toLowerCase() !== "img") {
@@ -1624,8 +1613,8 @@
          *
          * When the async test code is invoked, the direct return value is NULL,
          * while otherwise the direct return value is TRUE or FALSE.
-         * 
-         * @return {Boolean} TRUE or FALSE when the async detection logic has 
+         *
+         * @return {Boolean} TRUE or FALSE when the async detection logic has
          * already produced a verdict. Otherwise NULL.
          */
         Drawing.prototype.hasImageSupport = function (callback) {
@@ -1741,7 +1730,8 @@
             class: "qrcode-img",
             useSVG: false,
             useTABLE: false,
-            cover: null,
+            cover: null,        // URL
+            targetImage: null,  // DOMElement
             text: null,
             title: null,
             success: null,      // function (DOM_image_element OR false)
@@ -1772,6 +1762,17 @@
         if (typeof el === "string") {
             el = document.getElementById(el);
         }
+        // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
+        // turn it into a DOM node:
+        else if (el && typeof el.get === "function") {
+            el = el.get(0);
+        }
+
+        // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
+        // turn it into a DOM node:
+        if (this._htOption.targetImage && typeof this._htOption.targetImage.get === "function") {
+            this._htOption.targetImage = this._htOption.targetImage.get(0);
+        }
 
         var Drawing;
         if (this._htOption.useSVG || isSvgNode(el)) {
@@ -1799,18 +1800,23 @@
      * @param {String} sText link data
      */
     QRCode.prototype.makeCode = function(sText, title) {
+        var _htOption = this._htOption;
+        var self = this;
+
         if (!sText) {
             throw new Error('makeCode() takes in a text parameter');
         }
-        var self = this;
+        if (title === undefined) {
+            title = _htOption.title;
+        }
+
         this._oDrawing.clear();
-        this._oQRCode = new QRCodeModel(_getTypeNumber(sText, this._htOption.correctLevel), this._htOption.correctLevel);
+        this._oQRCode = new QRCodeModel(_getTypeNumber(sText, _htOption.correctLevel), _htOption.correctLevel);
         this._oQRCode.addData(sText);
         this._oQRCode.make();
         this._el.title = (title !== undefined) ? title : sText;
 
-        if (this._htOption.cover) {
-            var _htOption = this._htOption;
+        if (_htOption.cover) {
             // var overlayDrawOptions = JSON.parse(JSON.stringify(_htOption));
 
             // if (_htOption.overlayOptions) {
@@ -1875,8 +1881,8 @@
      *
      * When the async test code is invoked, the direct return value is NULL,
      * while otherwise the direct return value is TRUE or FALSE.
-     * 
-     * @return {Boolean} TRUE or FALSE when the async detection logic has 
+     *
+     * @return {Boolean} TRUE or FALSE when the async detection logic has
      * already produced a verdict. Otherwise NULL.
      */
     QRCode.prototype.hasImageSupport = function (callback) {
@@ -1885,7 +1891,7 @@
         }
         return false;
     };
-    
+
     /**
      * @name QRCode.CorrectLevel
      */
