@@ -15,6 +15,19 @@
   fieldset {
     margin-bottom: 30px;
   }
+
+  .qrcode-output {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 3px;
+    font-family: monospace;
+
+    float: left;
+    border: 2px solid white;
+    margin: 0.25em;
+    padding: 0.1em 1em;
+  }
+
   .text {
     font-size: 20px;
     color: #fff;
@@ -41,6 +54,8 @@
     padding: 30px;
     text-align: center;
     background-color: #575757;
+
+    overflow: hidden; /* make sure this wraps around the qrcode-output floats */
   }
   #qrcode {
     /* display: inline-block; */
@@ -95,28 +110,42 @@
         </select>
       </div>
     </fieldset>
-    <div id="qrcode"></div>
-    <div id="qrcode-as-image"></div>
+    <div class="qrcode-output">
+      <p id="qrcode-mode1">XXX:</p>
+        <div id="qrcode"></div>
+    </div>
+    <div class="qrcode-output">
+      <p id="qrcode-mode2">IMAGE:</p>
+        <div id="qrcode-as-image"></div>
+    </div>
+    <div class="qrcode-output">
+      <p id="qrcode-mode3">XXX:</p>
+      <svg id="qrcode-as-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="qrcode2"/>
+      </svg>
+    </div>
   </div>
 
   <script type="text/javascript">
 
-	function getQueryString(name) {
-	     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-	     var r = window.location.search.substr(1).match(reg);
-	     if (r != null) {
-		 	return unescape(r[2]); 
-		 }
-		 return null;
-	}
+  function getQueryString(name) {
+       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+       var r = window.location.search.substr(1).match(reg);
+       if (r != null) {
+      return unescape(r[2]);
+     }
+     return null;
+  }
 
-	var content = getQueryString("content");
+  var content = getQueryString("content");
 
-	if (content != null || content !== '') { 
-		var txtEl = $('#text').get(0);
-		txtEl.value = content;
-		txtEl.style.display = "none";
-	} 
+  if (content != null) {
+    var txtEl = $('#text').get(0);
+    txtEl.value = content;
+    if (0) {
+      txtEl.style.display = "none";
+    }
+  }
 
     $('#size, #margin, #border, #dark, #light, #bordercolor, #correction, #useSVG, #useTABLE, #drawOnlyDark, #noSmoothing, #removeAntiAliasing').on('keyup change', function (e) {
       var size = $('#size').val();
@@ -131,9 +160,11 @@
       var drawOnlyDark = $('#drawOnlyDark').is(':checked');
       var noSmoothing = $('#noSmoothing').is(':checked');
       var removeAntiAliasing = $('#removeAntiAliasing').is(':checked');
+
       $('#qrcode').empty();
+
       $('#qrcode-as-image').empty();
-      var qrcode = new QRCode($('#qrcode')[0], {
+      var qrcode = new QRCode($('#qrcode').get(0), {
         width:  parseInt(size) || 160,
         height: parseInt(size) || 160,
         margin: parseInt(margin) || 0,
@@ -149,6 +180,18 @@
         removeAntiAliasing: !!removeAntiAliasing,
         targetImage: $('#qrcode-as-image')
       });
+      $('#qrcode-mode1').text(qrcode.renderMode + ':');
+
+      // Note: #qrcode2 G element gets nuked by the first run here as `new QRCode()` will 
+      // pick the parent SVG DOM node, which will be *cleaned* when you edit a value or
+      // otherwise change anything in the test form in this demo page, hence we query
+      // for both the G node ID and SVG node ID: QRCode will recognize the jQuery 
+      // selection set and pick the first DOM node in the set, so the code below will
+      // always deliver a sensible target DOM node to render the SVG QRCode image to!
+      var qrcode2 = new QRCode($('#qrcode2, #qrcode-as-svg'), qrcode._htOption /* QUICK HACK: reference INTERNAL option object */);
+      $('#qrcode-mode3').text(qrcode2.renderMode + ':');
+
+      // Set up the demo test input form.
       $("#text").off('keyup').on('keyup', function (e) {
         console.log('Render new QRcode', {
           text: $('#text').val(),
@@ -168,7 +211,9 @@
           targetImage: $('#qrcode-as-image')
         });
 
-        qrcode.makeCode($('#text').val());
+        var msg = $('#text').val();
+        qrcode.makeCode(msg);
+        qrcode2.makeCode(msg);
       }).trigger('keyup');
     });
     // trigger only one of the registered events: that's enough to render the QR code at page load time.
@@ -176,3 +221,4 @@
   </script>
 </body>
 </html>
+

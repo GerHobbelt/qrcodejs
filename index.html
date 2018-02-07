@@ -1,17 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
-<head>
-<title>Cross-Browser QRCode generator for Javascript</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-<script type="text/javascript" src="jquery.min.js"></script>
-<script type="text/javascript" src="qrcode.js"></script>
-</head>
-<body style="text-align:center;">
-<input id="text" type="text" value="http://ihongqiqu.com/" style="width:80%" /><br />
-<div id="qrcode" style="width:300px; height:300px; margin-top:15px;" align="center"></div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cross-Browser QRCode generator for Javascript</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
+  </head>
+  <body style="text-align:center;">
+    <input id="text" type="text" value="http://ihongqiqu.com/" style="width:80%" /><br />
+    <div id="qrcode" style="width:300px; height:300px; margin-top:15px;" align="center"></div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 var qrcode = new QRCode(document.getElementById("qrcode"), {
 	width : 300,
 	height : 300
@@ -30,16 +30,22 @@ function makeCode () {
 }
 
 function getQueryString(name) {
-     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-     var r = window.location.search.substr(1).match(reg);
-     if(r!=null)return  unescape(r[2]); return null;
+  var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) {
+    return  unescape(r[2]); 
+  }
+  return null;
 }
 
 var content = getQueryString("content");
 
-if (content !== null || content !== undefined || content !== '') { 
-	document.getElementById("text").value = content;
-	document.getElementById("text").style.display="none";
+if (content != null) { 
+  var el = $("#text").get(0);
+	el.value = content;
+	if (0) {
+    el.style.display = "none";
+  }
 } 
 
 makeCode();
@@ -53,7 +59,6 @@ $("#text").
 			makeCode();
 		}
 	});
-</script>
-
-<script src="http://s95.cnzz.com/z_stat.php?id=1260545070&web_id=1260545070" language="JavaScript"></script>
-</body>
+    </script>
+  </body>
+</html>

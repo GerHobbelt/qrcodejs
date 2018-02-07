@@ -1043,6 +1043,8 @@
             this._htOption = htOption;
         };
 
+        Drawing.prototype.renderMode = 'SVG';
+
         Drawing.prototype.draw = function(oQRCode) {
             var _htOption = this._htOption;
             var _el = this._el;
@@ -1198,6 +1200,8 @@
             this._el = el;
             this._htOption = htOption;
         };
+
+        Drawing.prototype.renderMode = 'TABLE';
 
         /**
          * Draw the QRCode
@@ -1488,6 +1492,8 @@
             }
         };
 
+        Drawing.prototype.renderMode = 'CANVAS';
+
         /**
          * Draw the QRCode
          *
@@ -1764,8 +1770,12 @@
         }
         // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
         // turn it into a DOM node:
-        else if (el && typeof el.get === "function") {
+        else if (typeof el.get === "function") {
             el = el.get(0);
+        }
+        // Make sure we reference the SVG container node, not just a SVG element:
+        if (el.ownerSVGElement) {
+            el = el.ownerSVGElement;
         }
 
         // check if reference is a jQuery node or a DOM node: if it is a jQuery node,
@@ -1788,6 +1798,7 @@
         this._el.innerHTML = '';
         this._oQRCode = null;
         this._oDrawing = new Drawing(this._el, this._htOption);
+        this.renderMode = this._oDrawing.renderMode;
 
         if (this._htOption.text) {
             this.makeCode(this._htOption.text, this._htOption.title);
