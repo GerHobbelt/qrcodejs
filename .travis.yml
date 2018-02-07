@@ -21,8 +21,5 @@ node_js:
 #
 
 # ignore errors in `npm install` due to canvas package build failing:
-before_install:
-  npm install
-
 install:
-  
+  npm i || true
