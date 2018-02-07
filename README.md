@@ -1,3 +1,8 @@
+[![NPM version](https://img.shields.io/npm/v/@gerhobbelt/qrcodejs.svg)](https://www.npmjs.com/package/%40gerhobbelt%2Fqrcodejs)
+[![Downloads](https://img.shields.io/npm/dt/@gerhobbelt/qrcodejs.svg)](https://www.npmjs.com/package/%40gerhobbelt%2Fqrcodejs)
+[![TravisCI](https://travis-ci.org/GerHobbelt/qrcodejs.svg?branch=master)](https://travis-ci.org/GerHobbelt/qrcodejs)
+
+
 # QRCode.js
 
 QRCode.js is javascript library for making QRCode.
