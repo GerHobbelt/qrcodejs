@@ -19,3 +19,10 @@ node_js:
 #    - node_js: 4
 #    - node_js: 5
 #
+
+# ignore errors in `npm install` due to canvas package build failing:
+before_install:
+  npm install
+
+install:
+  
