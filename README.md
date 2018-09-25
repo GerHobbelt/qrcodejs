@@ -37,14 +37,16 @@ https://davidshimjs.github.io/qrcodejs/
 
 One way to use QRCode.js is by declaring a div into which the data will be generated.
 
-    <div id="qrcode"></div>
-    <script type="text/javascript">
-    new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
-    </script>
+```html
+<div id="qrcode"></div>
+<script type="text/javascript">
+new QRCode(document.getElementById("qrcode"), "http://jindo.dev.naver.com/collie");
+</script>
+```
 
 Options may also be specified as a JSON object in the constructor function:
 
-```
+```html
 <div id="qrcode"></div>
 <script type="text/javascript">
 var qrcode = new QRCode(document.getElementById("qrcode"), {
@@ -66,7 +68,7 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 
 and given the `qrcode` object you can use methods like `makeCode()` and `clear()` to modify existing code.
 
-```
+```javascript
 qrcode.clear(); // clear the code.
 qrcode.makeCode("http://naver.com"); // make another code.
 ```
