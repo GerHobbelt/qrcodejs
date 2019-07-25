@@ -1,0 +1,43 @@
+{
+  "name": "qrcodejs",
+  "version": "1.0.0",
+  "description": "Adaptation of original qrcodejs lib with modern tooling and wider compatibility'",
+  "main": "./build/qrcode.umd.js",
+  "scripts": {
+    "lint": "eslint ./src",
+    "pretest": "rollup -c rollup-test.config.js",
+    "test-mocha": "mocha ./test/build/mocha",
+    "test": "npm run test-mocha",
+    "build-browser": "rollup --config rollup-min.config.js",
+    "build-umd": "rollup -c",
+    "prebuild": "npm run lint && npm run test",
+    "build": "npm run build-umd && npm run build-browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrigcl/qrcodejs.git"
+  },
+  "keywords": [
+    "qrcode",
+    "svg",
+    "browser",
+    "node",
+    "typescript"
+  ],
+  "author": "Gabriel Castro (fork from davidshimjs)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gabrigcl/qrcodejs/issues"
+  },
+  "homepage": "https://github.com/gabrigcl/qrcodejs#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-es5": "^0.5.0",
+    "mocha": "^6.1.2",
+    "rollup": "^1.6.0",
+    "rollup-plugin-banner": "^0.2.0",
+    "rollup-plugin-commonjs": "^9.2.1",
+    "rollup-plugin-uglify": "^6.0.2"
+  }
+}
