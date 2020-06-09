@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cross-Browser QRCode generator for Javascript</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<script type="text/javascript" src="vendor/jquery.min.js"></script>
+<script type="text/javascript" src="../qrcode.js"></script>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+  }
+  fieldset {
+    margin-bottom: 30px;
+  }
+
+  .qrcode-output {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 3px;
+    font-family: monospace;
+
+    float: left;
+    border: 2px solid white;
+    margin: 0.25em;
+    padding: 0.1em 1em;
+  }
+
+  .text {
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 3px;
+    font-family: monospace;
+  }
+  .text input {
+    font-size: 20px;
+    text-align: center;
+    width: 80%;
+    font-family: monospace;
+  }
+  .text input[type="checkbox"] {
+    width: initial;
+  }
+  .text select {
+    font-size: 20px;
+    text-align: center;
+    width: 5em;
+    font-family: monospace;
+  }
+  #qrcode-container {
+    display: block;
+    padding: 30px;
+    text-align: center;
+    background-color: #575757;
+
+    overflow: hidden; /* make sure this wraps around the qrcode-output floats */
+  }
+  #qrcode {
+    /* display: inline-block; */
+    width: 100%;
+  }
+  #qrcode canvas {
+    margin: 0 auto;
+  }
+  #qrcode img {
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+  <div id="qrcode-container">
+    <fieldset>
+      <div class="text">
+        <label for="">Text:</label>
+        <input id="text" type="text" value="https://youyanchu.com">
+      </div>
+      <div class="text">
+        <label for="size">Size:</label>
+        <input id="size" type="number" value="160" style="width: 4em;">
+        <label for="margin">Margin:</label>
+        <input id="margin" type="number" value="2" style="width: 3em;">
+        <label for="border">Border:</label>
+        <input id="border" type="number" value="1" style="width: 3em;">
+        <label for="dark">Dark:</label>
+        <input id="dark" type="text" value="#000000" style="width: 6em;" maxlength="7">
+        <label for="light">Light:</label>
+        <input id="light" type="text" value="#ffffff" style="width: 6em;" maxlength="7">
+        <label for="bordercolor">Border:</label>
+        <input id="bordercolor" type="text" value="#ff0000" style="width: 6em;" maxlength="7">
+        <label for="useSVG">Use SVG:</label>
+        <input type="checkbox" name="useSVG" id="useSVG">
+        <label for="useTABLE">Use TABLE:</label>
+        <input type="checkbox" name="useTABLE" id="useTABLE">
+        <label for="drawOnlyDark">Draw Only Dark Pixels:</label>
+        <input type="checkbox" name="drawOnlyDark" id="drawOnlyDark">
+        <label for="noSmoothing">No Smoothing:</label>
+        <input type="checkbox" name="noSmoothing" id="noSmoothing">
+        <label for="removeAntiAliasing">Remove AntiAliasing:</label>
+        <input type="checkbox" name="removeAntiAliasing" id="removeAntiAliasing">
+      </div>
+      <div class="text">
+        <label for="correction">Correction:</label>
+        <select id="correction">
+          <option value="L">L (7%)</option>
+          <option value="M">M (15%)</option>
+          <option value="Q">Q (25%)</option>
+          <option value="H" selected>H (30%)</option>
+        </select>
+      </div>
+    </fieldset>
+    <div class="qrcode-output">
+      <p id="qrcode-mode1">XXX:</p>
+        <div id="qrcode"></div>
+    </div>
+    <div class="qrcode-output">
+      <p id="qrcode-mode2">IMAGE:</p>
+        <div id="qrcode-as-image"></div>
+    </div>
+    <div class="qrcode-output">
+      <p id="qrcode-mode3">XXX:</p>
+      <svg id="qrcode-as-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g id="qrcode2"/>
+      </svg>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+
+  function getQueryString(name) {
+       var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+       var r = window.location.search.substr(1).match(reg);
+       if (r != null) {
+      return unescape(r[2]);
+     }
+     return null;
+  }
+
+  var content = getQueryString("content");
+
+  if (content != null) {
+    var txtEl = $('#text').get(0);
+    txtEl.value = content;
+    if (0) {
+      txtEl.style.display = "none";
+    }
+  }
+
+    $('#size, #margin, #border, #dark, #light, #bordercolor, #correction, #useSVG, #useTABLE, #drawOnlyDark, #noSmoothing, #removeAntiAliasing').on('keyup change', function (e) {
+      var size = $('#size').val();
+      var margin = $('#margin').val();
+      var border = $('#border').val();
+      var dark = $('#dark').val();
+      var light = $('#light').val();
+      var bordercolor = $('#bordercolor').val();
+      var correction = $('#correction').val();
+      var useSVG = $('#useSVG').is(':checked');
+      var useTABLE = $('#useTABLE').is(':checked');
+      var drawOnlyDark = $('#drawOnlyDark').is(':checked');
+      var noSmoothing = $('#noSmoothing').is(':checked');
+      var removeAntiAliasing = $('#removeAntiAliasing').is(':checked');
+
+      $('#qrcode').empty();
+
+      $('#qrcode-as-image').empty();
+      var qrcode = new QRCode($('#qrcode').get(0), {
+        width:  parseInt(size) || 160,
+        height: parseInt(size) || 160,
+        margin: parseInt(margin) || 0,
+        border: parseInt(border) || 0,
+        colorDark: dark || '#000',
+        colorLight: light || '#fff',
+        colorBorder: bordercolor || '#f00',
+        correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M,
+        useSVG: !!useSVG,
+        useTABLE: !!useTABLE,
+        drawOnlyDark: !!drawOnlyDark,
+        noSmoothing: !!noSmoothing,
+        removeAntiAliasing: !!removeAntiAliasing,
+        targetImage: $('#qrcode-as-image')
+      });
+      $('#qrcode-mode1').text(qrcode.renderMode + ':');
+
+      // Note: #qrcode2 G element gets nuked by the first run here as `new QRCode()` will 
+      // pick the parent SVG DOM node, which will be *cleaned* when you edit a value or
+      // otherwise change anything in the test form in this demo page, hence we query
+      // for both the G node ID and SVG node ID: QRCode will recognize the jQuery 
+      // selection set and pick the first DOM node in the set, so the code below will
+      // always deliver a sensible target DOM node to render the SVG QRCode image to!
+      var qrcode2 = new QRCode($('#qrcode2, #qrcode-as-svg'), qrcode._htOption /* QUICK HACK: reference INTERNAL option object */);
+      $('#qrcode-mode3').text(qrcode2.renderMode + ':');
+
+      // Set up the demo test input form.
+      $("#text").off('keyup').on('keyup', function (e) {
+        console.log('Render new QRcode', {
+          text: $('#text').val(),
+          width:  parseInt(size) || 160,
+          height: parseInt(size) || 160,
+          margin: parseInt(margin) || 0,
+          border: parseInt(border) || 0,
+          colorDark: dark || '#000',
+          colorLight: light || '#fff',
+          colorBorder: bordercolor || '#f00',
+          correctLevel: QRCode.CorrectLevel[correction] || QRCode.CorrectLevel.M,
+          useSVG: !!useSVG,
+          useTABLE: !!useTABLE,
+          drawOnlyDark: !!drawOnlyDark,
+          noSmoothing: !!noSmoothing,
+          removeAntiAliasing: !!removeAntiAliasing,
+          targetImage: $('#qrcode-as-image')
+        });
+
+        var msg = $('#text').val();
+        qrcode.makeCode(msg);
+        qrcode2.makeCode(msg);
+      }).trigger('keyup');
+    });
+    // trigger only one of the registered events: that's enough to render the QR code at page load time.
+    $('#size').trigger('change');
+  </script>
+</body>
+</html>
+
