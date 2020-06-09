@@ -1157,7 +1157,8 @@
                 "y": marginY,
                 "width": nDrawnWidth,
                 "height": nDrawnHeight,
-                "id": "template"
+                "id": "template",
+                "shape-rendering": "crispEdges"
             }));
 
             for (var row = 0; row < nCount; row++) {
