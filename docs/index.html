@@ -67,6 +67,16 @@
   #qrcode img {
     margin: 0 auto;
   }
+  #sourcecode {
+    text-align: left;
+    font-size: 85%;
+    background-color: #222;
+    padding: 0.25em 0.5em;
+  }
+  .arrow-left {
+    font-size: 200%;
+    line-height: 50%;
+  }
 </style>
 </head>
 <body>
@@ -113,6 +123,11 @@
     <div class="qrcode-output">
       <p id="qrcode-mode1">XXX:</p>
         <div id="qrcode"></div>
+    </div>
+    <div class="qrcode-output">
+      <h2><span class="arrow-left">☚</span> The source code </h2>
+      <pre id="sourcecode">
+      </pre>
     </div>
     <div class="qrcode-output">
       <p id="qrcode-mode2">IMAGE:</p>
@@ -170,7 +185,7 @@
       $('#qrcode').empty();
       $('#qrcode-as-image').empty();
 
-      var qrcode = new QRCode($('#qrcode').get(0), {
+      var config = {
         width:  parseInt(size) || 160,
         height: parseInt(size) || 160,
         margin: parseInt(margin) || 0,
@@ -185,7 +200,8 @@
         noSmoothing: !!noSmoothing,
         removeAntiAliasing: !!removeAntiAliasing,
         targetImage: $('#qrcode-as-image')
-      });
+      };
+      var qrcode = new QRCode($('#qrcode').get(0), config);
       $('#qrcode-mode1').text(qrcode.renderMode + ':');
 
       // Note: #qrcode2 G element gets nuked by the first run here as `new QRCode()` will 
@@ -225,6 +241,35 @@
         } catch (ex) {
           $("#error-log").text(ex);
         }
+
+        // --- display the sample source code for the user ---
+
+        function printConfig(config) {
+          var opts = Object.assign({}, config);
+          opts.targetImage = true;
+          var j = JSON.stringify(opts, null, 2)
+            .replace(/"([^"]+)":(.+)/g, '$1:$2')
+            .replace(/targetImage:[^,}\n]+/, 'targetImage: $("#qrcode-as-image")');
+          return j;
+        }
+
+        var srccode = `
+var qrcode = new QRCode($('#qrcode').get(0), ${printConfig(config)});
+
+$("#text").on('keyup', function (e) {
+  var msg = $('#text').val();
+  // ➥ msg = "${msg.replace(/"/g, '\\"')}"
+
+  try {
+    qrcode.makeCode(msg);
+
+    $("#error-log").hide();
+  } catch (ex) {
+    $("#error-log").text(ex);
+  }
+});
+        `.trim();
+        $("#sourcecode").text(srccode);
       }).trigger('keyup');
     });
     // trigger only one of the registered events: that's enough to render the QR code at page load time.
