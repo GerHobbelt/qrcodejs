@@ -57,6 +57,10 @@ var qrcode = new QRCode(document.getElementById("qrcode"), {
 	colorDark:    "#000000",
 	colorLight:   "#ffffff",
 	correctLevel: QRCode.CorrectLevel.H,
+	// WARNING: when printing a QRcode on a DARK background, you MUST
+	// add a "quiet zone" around the QRcode for it to be properly
+	// recognized by all applications.
+	// Use a margin of 2 or more to accomplish this.
 	margin:       0,
 	overlayOptions: {
 		blockRatio: 0.4,
@@ -72,6 +76,15 @@ and given the `qrcode` object you can use methods like `makeCode()` and `clear()
 qrcode.clear(); // clear the code.
 qrcode.makeCode("http://naver.com"); // make another code.
 ```
+
+### WARNING when printing on a *dark* background
+
+When printing a QRcode on a *dark* background, you **must**
+add a "*quiet zone*" around the QRcode for it to be properly
+recognized by all applications.
+
+Use a `margin` of 2 or more to accomplish this.
+
 
 
 ## Browser Compatibility
