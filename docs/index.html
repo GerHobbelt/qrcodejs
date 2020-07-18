@@ -124,6 +124,10 @@
         <g id="qrcode2"/>
       </svg>
     </div>
+    <div class="qrcode-output">
+      <p id="error-log">
+      </p>
+    </div>
   </div>
 
   <script type="text/javascript">
@@ -161,9 +165,11 @@
       var noSmoothing = $('#noSmoothing').is(':checked');
       var removeAntiAliasing = $('#removeAntiAliasing').is(':checked');
 
+      $("#error-log").empty();
+      $("#error-log").parent().show();
       $('#qrcode').empty();
-
       $('#qrcode-as-image').empty();
+
       var qrcode = new QRCode($('#qrcode').get(0), {
         width:  parseInt(size) || 160,
         height: parseInt(size) || 160,
@@ -212,8 +218,13 @@
         });
 
         var msg = $('#text').val();
-        qrcode.makeCode(msg);
-        qrcode2.makeCode(msg);
+        try {
+          qrcode.makeCode(msg);
+          qrcode2.makeCode(msg);
+          $("#error-log").parent().hide();
+        } catch (ex) {
+          $("#error-log").text(ex);
+        }
       }).trigger('keyup');
     });
     // trigger only one of the registered events: that's enough to render the QR code at page load time.
