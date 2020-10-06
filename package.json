@@ -1,6 +1,6 @@
 {
   "name": "@liberateinc/qrcodejs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "QRCodeJS is a javascript library for making QRCode. It has no dependencies, is cross-browser and using HTML5 Canvas. This project is a fork by Liberate Inc, from KeeeX Company from davidshimjs, with Code Length Overflow fixed.",
   "main": "qrcode.js",
   "scripts": {
